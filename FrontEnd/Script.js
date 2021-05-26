@@ -189,10 +189,12 @@ function getUser(what){
 
 function parseUser(json_data){
     console.log("User data is: ", json_data)
+    const container = $("div.container-display")
+    container.empty()
     for(item of json_data){
         console.log("Passing Item: ", item)
         const obj = {Name: item.item_name, Type: item.item_type}
-        makeEntry(obj);
+        makeEntry(obj, container);
     }
 }
 
