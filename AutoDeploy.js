@@ -2,25 +2,25 @@ require('dotenv').config()
 
 
 
-commandsol = [
-    `git add --all`,
-    `git commit -m "Auto Update."`,
-    `git push --set-upstream origin Nguyen_Heroku`,
-    `git log`,
-    `heroku log --tail`
-]
+
 
 commands = [
     ['clear', []],
     //[`git`, [`branch`, `checkout`, `master`] ],
     [`git`, [`add`, `--all`] ],
-    [`git`, [`commit`, `-m "Auto Update."`] ],
-    [`git`, [`push`, `origin`, `Beta`]]
+    [`git`, [`commit`, `-m "Auto Update."`] ],    // Change optional message
+    [`git`, [`push`, `origin`, `Beta`]]      // Change to your Branch name
 //    [`git`, [`log`]],
 //    [`heroku`, [`logs`, `--tail`] ]
 ]
 
 
+/*
+DO NOT USE THIS COMMENTED OUT CODE.
+DO NOT EVEN LOOK AT IT
+WHY ARE YOU STILL LOOKING
+I SAID DO NOT LOOK
+Okay, fine. Your funereal... 
 function ExecuteCommandsOld(array){
     if(array.length<=0){
         console.log("All commands executed!")
@@ -43,6 +43,7 @@ function ExecuteCommandsOld(array){
         });
     }
 }
+*/
 
 
 function ExecuteCommands(array){
