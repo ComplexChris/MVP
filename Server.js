@@ -25,7 +25,6 @@ function Express(){
 
     // Declare the relative path to the public HTML folder
     app.use(express.static( path.join(__dirname, 'FrontEnd' ) )); 
-    const path = require('path');
 
     app.use((req, res, next)=> {
         console.log("SHIT")
