@@ -127,7 +127,7 @@ class Yolo{
         // Defaults to appending to the Display container
         const template = {Name:"", Type:"", ...obj}
 
-        */
+        /*
         for(let item in obj){
             if(item in template && obj[item] !== null){
                 template[item] = obj[item]
