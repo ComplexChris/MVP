@@ -20,6 +20,8 @@ const __version__ = "2.3.7"
 console.log(__version__)
 
 function Callback(e){
+    // Primary callback for submitting user input
+    // Will invoke external API
     console.log(e)
     if( e.submitter.value==="Reset" ){
         const inp_els = $(".field .user_input")
@@ -183,12 +185,24 @@ class Yolo{
 function handleClickOld(e, obj){
     //alert("You clicked: ", obj)
     console.log("Raw obj: ", obj) //inst.CACHE[name] )
-    $.post({
-        url: "/api/save_entry",
-        data: JSON.stringify( obj ),
-        contentType: "application/json",
-        success: function(resultData) { alert("Save Complete") }
-    });
+    // Do get request. If already liked, invoke delete request
+    // Else, add to databases
+    const create = () =>{
+        $.post({
+            url: "/api/save_entry",
+            data: JSON.stringify( obj ),
+            contentType: "application/json",
+            success: function(resultData) { alert("Save Complete") }
+        });
+    }
+    const remove = () => {
+
+    }
+
+    // Test if entry exists
+
+
+
     //saveData.error(function() { alert("Something went wrong"); });
 }
 
@@ -196,17 +210,28 @@ var global;
 function handleClick(e, obj){
     global = e;
     var dataaa = obj //{"text":"This is my first post!"}
-    $.ajax({ 
-        type:"POST",
-        url:"/api/add_like",
-        data: JSON.stringify(dataaa), 
-        contentType: 'application/json',
-        success: function(res) {
-            //console.log(res);
-            //console.log("Added");
-        }.bind(this),
-        error: function(error){
-            console.log(error)
-        }
-    }); 
+    
+
+    // Do get request. If already liked, invoke delete request
+    // Else, add to databases
+    const create = () =>{
+        $.ajax({ 
+            type:"POST",
+            url:"/api/add_like",
+            data: JSON.stringify( obj ), 
+            contentType: 'application/json',
+            success: function(res) {
+                console.log(res);
+                console.log("Added");
+            }.bind(this),
+            error: function(error){
+                console.log(error)
+            }
+        }); 
+    }
+    const remove = () => {
+
+    }
+    create();
+    // Test if entry exists
 }

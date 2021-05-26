@@ -16,7 +16,7 @@ function Express(){
     const path = require('path');
     const express = require('express');
     const app = express();
-
+    const PORT = process.env.PORT || 5000
     // Add middleware to parse body
     app.use( express.json() )
 
@@ -32,8 +32,8 @@ function Express(){
         next();
     })
 
-    app.listen(process.env.PORT, () => {
-        console.log(`Server listening on Port ${process.env.PORT}` );
+    app.listen(PORT, () => {
+        console.log(`Server listening on Port ${PORT}` );
     });
 
     app.get('/', (req, res)=>{
