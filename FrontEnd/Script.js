@@ -125,7 +125,7 @@ class Yolo{
         console.log("OBJECT IS: ", obj)
         // Takes an entry from a $.get response and create a card with the data
         // Defaults to appending to the Display container
-        const template = {Name:"", Type:"", state:"", postal_code:"", brewery_type:"", website_url:"", phone:""}
+        const template = {Name:"", Type:""}
         for(let item in obj){
             if(item in template && obj[item] !== null){
                 template[item] = obj[item]
@@ -148,6 +148,30 @@ class Yolo{
         ])  // Closer for parent object
     }
 
+    getUser(what){
+        // AJAX Call to server.
+        // Then parses results 
+        // and passes to make entry elements
+        $.ajax({ 
+            type:"GET",
+            url:"/api/get_user_db",
+            data: JSON.stringify(what), 
+            contentType: 'application/json',
+            success: function(res) {
+                console.log("API 'get' succeeded");
+                this.parseUser(res);
+            },
+            error: function(error){
+                console.log('An error has occured: ', error)
+            }
+        }); 
+
+    }
+
+    parseUser(json_data){
+        console.log("User data is: ", json_data)
+    }
+
 }
 
 function handleClickOld(e, obj){
@@ -168,7 +192,7 @@ function handleClick(e, obj){
     var dataaa = obj //{"text":"This is my first post!"}
     $.ajax({ 
         type:"POST",
-        url:"/api/save_entry",
+        url:"/api/add_like",
         data: JSON.stringify(dataaa), 
         contentType: 'application/json',
         success: function(res) {

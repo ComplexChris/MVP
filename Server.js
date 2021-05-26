@@ -50,18 +50,36 @@ function Express(){
         })
     })
 
-    app.get('/api/get_entry', (req, res) => {
+    app.get('/api/get_user_db', (req, res) => {
+        // Gets entire user database. Returns row entries. {}
+        const command = `SELECT * FROM user_likes `
+        db.query(command, (err, data) => {
+            res.json( (err) ? err : data.rows );
+        })
+
     })
 
-    app.post('/api/save_entry', (req, res) => {
+    app.post('/api/add_like', (req, res) => {
         // Primary method. Used to add entries to 2 tables. 
+        // 2 Step process.
+        // 1. Add item to 'single_items table
+        // 2. Get id of item and add to user likes
+
+        // Add item to single_items table
         console.log("POST Request made");
         console.log("Body: ", req.body);
-        //res.send( req.body )
         const [name, type] = [req.body.Name, req.body.Type];
         const command = `INSERT INTO single_items (item_name, item_type) VALUES ($1, $2)`
         db.query(command, [name, type], (err, data) => {
-            res.json(data);
+            if (err){
+                console.log(err);
+                res.send(err)
+            }
+            //res.json( (err) ? err : data );
+            else{
+                // No issues adding item. Proceed to getting id and adding to user table
+                const get_id = `SELECT item_id FROM single_items WHERE item_name=$1 LIMIT 1;`
+            }
         })
     })
 
