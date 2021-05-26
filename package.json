@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "MVP Project, Fullstack Demo",
-  "main": "index.js",
+  "main": "FrontEnd",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node Server.js"
