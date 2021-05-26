@@ -37,7 +37,7 @@ function Express(){
     });
 
     app.get('/', (req, res)=>{
-        res.send()
+        res.sendFile("./FrontEnd/index.html")
     })
 
     app.get('/debug', (req, res) => {
