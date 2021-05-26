@@ -52,8 +52,11 @@ function Express(){
 
     app.get('/api/get_user_db', (req, res) => {
         // Gets entire user database. Returns row entries. {}
-        const command = `SELECT * FROM user_likes `
+        //const command = `SELECT * FROM user_likes `
+        const command = ` SELECT item_name, item_type FROM single_items 
+                        JOIN user_likes ON item_id=liked_item_id;`
         db.query(command, (err, data) => {
+            res.status( (err) ? 404 : 200 )
             res.json( (err) ? err : data.rows );
         })
 
