@@ -23,7 +23,7 @@ function Express(){
     const db = require('./db/db_configuration');
 
     // Declare the relative path to the public HTML folder
-    app.use(express.static('FrontEnd'));    
+    app.use(express.static('./FrontEnd'));    
 
     app.use((req, res, next)=> {
         console.log("SHIT")
