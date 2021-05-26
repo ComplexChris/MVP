@@ -35,11 +35,12 @@ function Express(){
         console.log(`Server listening on Port ${process.env.PORT}` );
     });
 
-    app.get('/home', (req, res) => {
+    app.get('/debug', (req, res) => {
         console.log("DB Adress is: ", db);
         //res.send("TEST");
         const command = "SELECT * FROM single_items"
         db.query(command, (err, data) => {
+            if (err){res.json(err);}
             res.json(data);
         })
     })
