@@ -13,6 +13,7 @@ const query_master = {
 function Express(){
 
     // Establish server requirements. 
+    const path = require('path');
     const express = require('express');
     const app = express();
 
@@ -38,7 +39,7 @@ function Express(){
     app.get('/', (req, res)=>{
         res.send()
     })
-    
+
     app.get('/debug', (req, res) => {
         console.log("DB Adress is: ", db);
         //res.send("TEST");
