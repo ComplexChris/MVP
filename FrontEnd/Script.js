@@ -1,6 +1,8 @@
 // Create a Dropzone object
 // Capture path and store data of file locally
 
+const { json } = require("express")
+
 // Use Pantry ( https://getpantry.cloud/apiv1/pantry/809cff74-8863-45df-a7b8-44641613bcf8/basket/testBasket )
 // Use that to create and store variables from GoFile
 
@@ -191,7 +193,7 @@ function parseUser(json_data){
     console.log("User data is: ", json_data)
     for(item of json_data){
         console.log("Passing Item: ", item)
-        const obj = {Name: item_name, Type: item_type}
+        const obj = {Name: item.item_name, Type: item.item_type}
         makeEntry(obj);
     }
 }
