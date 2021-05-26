@@ -56,7 +56,7 @@ function createListeners(){
     } )
 
     const user_page = $("a.nav_user");
-    user_page. click(getUser );
+    user_page. click( getUser );
     console.log("User action set")
 }
 
@@ -174,7 +174,7 @@ function getUser(what){
     $.ajax({ 
         type:"GET",
         url:"/api/get_user_db",
-        data: JSON.stringify(what), 
+        //data: JSON.stringify(what), 
         contentType: 'application/json',
         success: function(res) {
             console.log("API 'get' succeeded");
