@@ -125,12 +125,14 @@ class Yolo{
         console.log("OBJECT IS: ", obj)
         // Takes an entry from a $.get response and create a card with the data
         // Defaults to appending to the Display container
-        const template = {Name:"", Type:""}
+        const template = {Name:"", Type:"", ...obj}
+
+        */
         for(let item in obj){
             if(item in template && obj[item] !== null){
                 template[item] = obj[item]
             }
-        }
+        }   */
         // Uses standard structure for displaying elements
         //const $header = $('<div/>', {class: "title", text=template.name})
         parent.append([
@@ -170,6 +172,10 @@ class Yolo{
 
     parseUser(json_data){
         console.log("User data is: ", json_data)
+        for(item in json_data){
+            console.log("Passing Item: ", item)
+            this.makeEntry(item);
+        }
     }
 
 }
