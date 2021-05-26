@@ -37,7 +37,11 @@ function Express(){
 
     app.get('/home', (req, res) => {
         console.log("DB Adress is: ", db);
-        res.send("TEST");
+        //res.send("TEST");
+        const command = "SELECT * FROM single_items"
+        db.query(command, (err, data) => {
+            res.json(data);
+        })
     })
 
     app.get('/api/get_entry', (req, res) => {
