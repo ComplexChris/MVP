@@ -35,6 +35,9 @@ function Express(){
         console.log(`Server listening on Port ${process.env.PORT}` );
     });
 
+    app.get('/', (req, res)=>{
+        res.send()
+    }
     app.get('/debug', (req, res) => {
         console.log("DB Adress is: ", db);
         //res.send("TEST");
