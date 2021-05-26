@@ -5,6 +5,11 @@ const { response } = require('express');
 
 require('dotenv').config() // TODO: ADD THIS LINE
 
+const query_master = {
+    test: (x) => console.log(x)
+}
+
+
 function Express(){
 
     // Establish server requirements. 
@@ -13,22 +18,49 @@ function Express(){
 
     // Add middleware to parse body
     app.use( express.json() )
-    //const db = require('./db/db_configuration');
+
+    // Get the database pool instance
+    const db = require('./db/db_configuration');
 
     // Declare the relative path to the public HTML folder
     app.use(express.static('FrontEnd'));    
+
+    app.use((req, res, next)=> {
+        console.log("SHIT")
+        console.log("FFFUUUCCKK: ", req.body);
+        next();
+    })
 
     app.listen(process.env.PORT, () => {
         console.log(`Server listening on Port ${process.env.PORT}` );
     });
 
     app.get('/home', (req, res) => {
-        console.log("Home")
+        console.log("DB Adress is: ", db);
+        res.send("TEST");
     })
-    app.get('/api/students', (req, res) => {
-        db.query('SELECT * FROM student', (err, data) => {
-            res.json(data.rows);
+
+    app.get('/api/get_entry', (req, res) => {
+    })
+
+    app.post('/api/save_entry', (req, res) => {
+        // Primary method. Used to add entries to 2 tables. 
+        console.log("POST Request made");
+        console.log("Body: ", req.body);
+        //res.send( req.body )
+        const [name, type] = [req.body.Name, req.body.Type];
+        const command = `INSERT INTO single_items (item_name, item_type) VALUES ($1, $2)`
+        db.query(command, [name, type], (err, data) => {
+            res.json(data);
         })
+    })
+
+    app.put('/api/save_entry', (req, res) => {
+        // Placeholder for future updates
+    })
+
+    app.patch('/api/save_entry', (req, res) => {
+        // Placeholder only. Not currently in use.
     })
 
 }
@@ -36,3 +68,6 @@ function Express(){
 if(true){
     Express();
 }
+
+
+//  SELECT item_id FROM single_items WHERE item_name='AC/DC' LIMIT 1;
