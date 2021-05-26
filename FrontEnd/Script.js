@@ -61,8 +61,7 @@ function createListeners(){
 }
 $(document).ready( createListeners )
 
-var CACHE; 
-var HOME;
+var CACHE = []; 
 
 function  start_here(search=false){
     
@@ -124,10 +123,10 @@ function parseGet(raw){
     else{
         const container = $("div.container-display")
         container.empty()    // Empty the Cache and Display Container
-        CACHE = {}
+        CACHE = []
         for(let item of response){
             setTimeout( () => {
-                CACHE[item.name] = item
+                CACHE.push(item);
                 makeEntry(item, container) } ,
             200)
         }
@@ -169,7 +168,7 @@ function getHome(){
     container.empty()
     for(item of CACHE){
         console.log("Passing Item for Home: ", item)
-        makeEntry(obj, container);
+        makeEntry(item, container);
     }
 }
 
