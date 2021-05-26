@@ -78,8 +78,10 @@ function Express(){
             //res.json( (err) ? err : data );
             else{
                 // No issues adding item. Proceed to getting id and adding to user table
+                console.log("Success!!!")
                 const get_id = `SELECT item_id FROM single_items WHERE item_name=$1 LIMIT 1;`
             }
+            res.status(200).send({status:'added'})
         })
     })
 
