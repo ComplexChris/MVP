@@ -38,10 +38,6 @@ function Callback(e){
     return false;
 }
 
-//$(".field .user_input").on("submit")
-// Can also do $(submit_form)
-$(document).ready( createListeners )
-
 function createListeners(){
     console.log("DTGHDGH")
     $(".user_input").keyup( function(e){
@@ -56,14 +52,20 @@ function createListeners(){
     } )
 
     const user_page = $("a.nav_user");
-    user_page. click( getUser );
+    user_page.click( getUser );
+
+    const home_page = $("a.nav_home");
+    home_page.click( getHome );
+
     console.log("User action set")
 }
+$(document).ready( createListeners )
 
 var CACHE; 
+var HOME;
 
 function  start_here(search=false){
-    CACHE = {}
+    
     if( search ){
         const input_map = getInputs()
         const URL = getURL( input_map )
@@ -108,12 +110,6 @@ function getURL(input_map){
     }
     return(newURL);
 }
-
-
-
-
-
-
 function invokeGet(URL){
     $.get(URL, (data) => {parseGet(data)} )
 }
@@ -127,7 +123,8 @@ function parseGet(raw){
     }
     else{
         const container = $("div.container-display")
-        container.empty()
+        container.empty()    // Empty the Cache and Display Container
+        CACHE = {}
         for(let item of response){
             setTimeout( () => {
                 CACHE[item.name] = item
@@ -143,7 +140,7 @@ function makeEntry(obj, parent){
     // Takes an entry from a $.get response and create a card with the data
     // Defaults to appending to the Display container
     const template = {Name:"", Type:"", ...obj}
-
+    if(template.Name.length<1){return}
     /*
     for(let item in obj){
         if(item in template && obj[item] !== null){
@@ -167,6 +164,15 @@ function makeEntry(obj, parent){
     ])  // Closer for parent object
 }
 
+function getHome(){
+    const container = $("div.container-display")
+    container.empty()
+    for(item of CACHE){
+        console.log("Passing Item for Home: ", item)
+        makeEntry(obj, container);
+    }
+}
+
 function getUser(what){
     // AJAX Call to server.
     // Then parses results 
@@ -186,7 +192,6 @@ function getUser(what){
     }); 
 
 }
-
 function parseUser(json_data){
     console.log("User data is: ", json_data)
     const container = $("div.container-display")
@@ -225,8 +230,8 @@ function handleClickOld(e, obj){
 
 var global;
 function handleClick(e, obj){
-    global = e;
-    var dataaa = obj //{"text":"This is my first post!"}
+    // Click event for when an item card is clicked.
+    // obj //{"text":"This is my first post!"}
     
 
     // Do get request. If already liked, invoke delete request
