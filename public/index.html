@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Yolo Swag</title>
+  <meta name="description" content="Yolo Swag">
+  <meta name="author" content="ChrisNguyen">
+
+  <link rel="stylesheet" href="Style.css?v=1.0" type="text/css">
+  <link rel="stylesheet" href="./validator/fv.css" type="text/css" />
+  
+  
+</head>
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="./validator/validator.js"></script>
+    <script defer src="Script.js"></script>
+
+    <div class="master" >
+
+        <div class="container-root" >
+
+            
+            <div class="container-header" id="form_main" >
+                <div class="banner">Welcome to Yolo Swag</div> <br>
+
+                <ul class="list-inline-container">
+                    <h3 class="list-inline-item"><a href="#"> Home</a></h3>
+                    <h3 class="list-inline-item"><a href="#"> My List</a></h3>
+                    
+                </ul>
+
+                <div class="banner greeting">What are we listening to today? 😏  </div><br>
+                <form onsubmit="Callback(event)" class="submit_search_form" >
+
+                    <div class="field" id="by_name">
+                        <label>
+                            <span>What do you like?</span>
+                            <input placeholder="Pulp Fiction, Fleetwood Mac, etc." type="text" class='user_input' name="by_name" onchange="console.log('SHIT') " >
+                        </label>
+                        <div class='tooltip help'>
+                            <span>?</span>
+                            <div class='content'>
+                                <b></b>
+                                <p>Enter a piece of thier title</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <input type="submit" value="Submit" class="submit_action">
+                    <input type="submit" value="Reset" class="submit_action">
+                    
+                </form>
+            </div>
+
+            <div class="container-display">
+                <div id="mapid"></div>
+            </div>
+
+            <div class="container-footer">
+
+                <footer >
+                    <ul class="list-inline-container">
+                        <li class="list-inline-item"><a href="#">Home</a></li>
+                        <li class="list-inline-item"><a href="#">About</a></li>
+                        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                    </ul>
+                    <p class="copyright">Chris Nguyen © 2021</p>
+                </footer>
+
+            </div>
+            
+        </div>
+    </div>
+
+    
+</body>
+</html>
