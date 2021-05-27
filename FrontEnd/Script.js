@@ -26,6 +26,7 @@ var LOCATION;
 
 $(document).ready( () => {
     createListeners()
+    invokeCORS()
     // Establish User DB to save overhaul later
     GET_AJAX("/api/get_user_db", (res) =>{
         console.log("API 'get' succeeded");
@@ -33,7 +34,13 @@ $(document).ready( () => {
     })
 } )
 
-
+function invokeCORS(){
+    const token = `489367e738051a270dc7ea09c494a6764b81a5f6cb21b37ec0fafa142ddaa871`
+    const url = `https://cors-anywhere.herokuapp.com/corsdemo?accessRequest=${token}`
+    GET_AJAX(url, (res)=>{
+        console.log("CORS response: ", res)
+    })
+}
 function Callback(e){
     // Primary callback for submitting user input
     // Will invoke external API
