@@ -1,8 +1,6 @@
 // Create a Dropzone object
 // Capture path and store data of file locally
 
-const { json } = require("express");
-
 
 // Use Pantry ( https://getpantry.cloud/apiv1/pantry/809cff74-8863-45df-a7b8-44641613bcf8/basket/testBasket )
 // Use that to create and store variables from GoFile
@@ -36,13 +34,13 @@ $(document).ready( () => {
     })
 } )
 
-function invokeCORS(){
-    const token = `489367e738051a270dc7ea09c494a6764b81a5f6cb21b37ec0fafa142ddaa871`
-    const url = `https://cors-anywhere.herokuapp.com/corsdemo?accessRequest=${token}`
-    GET_AJAX(url, (res)=>{
-        console.log("CORS response: ", res)
-    })
-}
+// function invokeCORS(){
+//     const token = `489367e738051a270dc7ea09c494a6764b81a5f6cb21b37ec0fafa142ddaa871`
+//     const url = `https://cors-anywhere.herokuapp.com/corsdemo?accessRequest=${token}`
+//     GET_AJAX(url, (res)=>{
+//         console.log("CORS response: ", res)
+//     })
+// }
 function Callback(e){
     // Primary callback for submitting user input
     // Will invoke external API
@@ -152,6 +150,7 @@ function parseGet(raw){
                 let ret = makeEntry(item, container) 
                 if(ret!==false){console.log("SETTING NOT EMPTY")} 
                 if(response.length==0 & isEmpty){
+                    console.log("EXECUTING ALERT: ", item, response)
                     alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
                 }
             } ,
@@ -230,7 +229,7 @@ function parseEntries(json_data){
             alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
         }
     }
-    if(isEmpty) {alert("No matches found for that query. \nMaybe adjust the Entertainment Type?")}
+    if(isEmpty) {alert("Sorry, couldn't find any items in your favorites that match that Entertainment Type.")}
 }
 
 

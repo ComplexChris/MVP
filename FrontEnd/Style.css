@@ -71,14 +71,15 @@ label span{
 .banner{
     align-self: center;
     color: black;
-    font-size: 30px;
+    font-size: 40px;
     font-weight: bold;
     font-style: oblique;
+    font-family: 'Dancing Script', cursive;
     text-shadow: 5px 4px 8px maroon ;
     padding:3px
 }
 .greeting{
-    font-size: 20px;
+    font-size: 30px;
 }
 
 .submit_action{

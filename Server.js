@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const { response } = require('express');
 
 
@@ -16,7 +15,7 @@ function Express(){
     const path = require('path');
     const express = require('express');
     const app = express();
-    const PORT = process.env.PORT || 5000
+    const PORT = process.env.PORT || 3000
     // Add middleware to parse body
     app.use( express.json() )
 
@@ -24,19 +23,23 @@ function Express(){
     const db = require('./db/db_configuration');
 
     // Declare the relative path to the public HTML folder
+    console.log("SETTING: ", path.join(__dirname, 'FrontEnd' ) )
     app.use(express.static( path.join(__dirname, 'FrontEnd' ) )); 
-
-    app.use((req, res, next)=> {
-        console.log("SHIT")
-        console.log("FFFUUUCCKK: ", req.body);
-        next();
-    })
+    
+    // app.use((req, res, next)=> {
+    //     console.log("SHIT")
+    //     console.log("FFFUUUCCKK: ", req.body);
+    //     next();
+    // })
 
     app.listen(PORT, () => {
-        console.log(`Server listening on Port ${PORT}` );
+        console.log(`Server listening on Port ${PORT}\n`, arguments );
     });
 
+
+
     app.get('/', (req, res)=>{
+        console.log("HOME DIRECTORY");
         res.sendFile( path.join(__dirname, "./FrontEnd/index.html") )
     })
 
@@ -59,6 +62,7 @@ function Express(){
         //const command = `SELECT * FROM user_likes `
         const command = ` SELECT item_name, item_type FROM single_items 
                         JOIN user_likes ON item_id=liked_item_id;`
+        console.log(req);
         db.query(command, (err, data) => {
             res.status( (err) ? 404 : 200 )
             res.json( (err) ? err : data.rows );
