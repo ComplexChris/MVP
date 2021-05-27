@@ -240,9 +240,11 @@ function handleClick(e, obj){
     
     const add_item = () =>{
         // Makes POST requests to add item to table, and returns ID of item
-        
+        // obj //{Name:"", Type:""}
         POST_AJAX( '/api/add_item', obj, (item_id)=>{
-            POST_AJAX( '/api/add_to_user', item_id, (resp)=>{
+            const date_str = new Date().toGMTString()
+            const user_stuff = {item_id:item_id, add_date:date_str}
+            POST_AJAX( '/api/add_to_user', user_stuff, (resp)=>{
                 alert( (resp.status==='added') ? "Added to likes" : "Couldn't add to likes")
             })
         } )
@@ -274,7 +276,7 @@ function POST_AJAX(url, json_data, callBack){
         success: (res) => {callBack(res)},
         error: function(error){
             console.log(error)
-            alert("Error. Can't do that right now.")
+            alert("Error. Can't POST that right now.")
         }
     }); 
 }
@@ -286,7 +288,7 @@ function GET_AJAX(url, callBack){
         success: (res) => {callBack(res)},
         error: function(error){
             console.log(error)
-            alert("Error. Can't do that right now.")
+            alert("Error. Can't GET that right now.")
         }
     }); 
 }
