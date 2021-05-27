@@ -1,6 +1,7 @@
 // Create a Dropzone object
 // Capture path and store data of file locally
 
+
 // Use Pantry ( https://getpantry.cloud/apiv1/pantry/809cff74-8863-45df-a7b8-44641613bcf8/basket/testBasket )
 // Use that to create and store variables from GoFile
 
@@ -16,9 +17,21 @@ $(document).ready(function(){
     });
 }); */
 
-const __version__ = "2.3.7"
+const __version__ = "5.3.7"
 console.log(__version__)
 
+var CACHE = [];   //{Name:"", Type:""}
+var USER_CACHE = []; //{Name:"", Type:""}
+var LOCATION;
+
+$(document).ready( () => {
+    createListeners()
+    // Establish User DB to save overhaul later
+    GET_AJAX("/api/get_user_db", (res) =>{
+        console.log("API 'get' succeeded");
+        USER_CACHE = res;
+    })
+} )
 
 
 function Callback(e){
@@ -59,9 +72,7 @@ function createListeners(){
 
     console.log("User action set")
 }
-$(document).ready( createListeners )
 
-var CACHE = []; 
 
 function  start_here(search=false){
     
@@ -172,25 +183,16 @@ function getHome(){
     }
 }
 
-function getUser(what){
+function getUser(){
     // AJAX Call to server.
     // Then parses results 
     // and passes to make entry elements
-    $.ajax({ 
-        type:"GET",
-        url:"/api/get_user_db",
-        //data: JSON.stringify(what), 
-        contentType: 'application/json',
-        success: function(res) {
-            console.log("API 'get' succeeded");
-            parseUser(res);
-        },
-        error: function(error){
-            console.log('An error has occured: ', error)
-        }
-    }); 
-
+    GET_AJAX("/api/get_user_db", (res) =>{
+        console.log("API 'get' succeeded");
+        parseUser(res);
+    })
 }
+
 function parseUser(json_data){
     console.log("User data is: ", json_data)
     const container = $("div.container-display")
@@ -230,29 +232,61 @@ function handleClickOld(e, obj){
 var global;
 function handleClick(e, obj){
     // Click event for when an item card is clicked.
-    // obj //{"text":"This is my first post!"}
+    // obj //{Name:"", Type:""}
     
 
     // Do get request. If already liked, invoke delete request
     // Else, add to databases
-    const create = () =>{
-        $.ajax({ 
-            type:"POST",
-            url:"/api/add_like",
-            data: JSON.stringify( obj ), 
-            contentType: 'application/json',
-            success: function(res) {
-                console.log(res);
-                console.log("Added");
-            }.bind(this),
-            error: function(error){
-                console.log(error)
-            }
-        }); 
+    
+    const add_item = () =>{
+        // Makes POST requests to add item to table, and returns ID of item
+        
+        POST_AJAX( '/api/add_item', obj, (item_id)=>{
+            POST_AJAX( '/api/add_to_user', item_id, (resp)=>{
+                alert( (resp.status==='added') ? "Added to likes" : "Couldn't add to likes")
+            })
+        } )
     }
-    const remove = () => {
-
+    const remove_item = () => {
+        
+        alert("REMOVED")
     }
-    create();
+    // USER_CACHE.forEach( (item)=>{if(item==sub){n=-1} } ) 
+    const index = USER_CACHE.indexOf(obj)
+    if( index < 0 ){
+        USER_CACHE.push(obj)
+        add_item();
+    }
+    else{
+        USER_CACHE.splice( index, 1 );
+        remove_item();
+    }
     // Test if entry exists
+}
+
+
+function POST_AJAX(url, json_data, callBack){
+    $.ajax({ 
+        type:"POST",
+        url: url,
+        data: JSON.stringify( json_data ), 
+        contentType: 'application/json',
+        success: (res) => {callBack(res)},
+        error: function(error){
+            console.log(error)
+            alert("Error. Can't do that right now.")
+        }
+    }); 
+}
+function GET_AJAX(url, callBack){
+    $.ajax({ 
+        type:"GET",
+        url: url,
+        contentType: 'application/json',
+        success: (res) => {callBack(res)},
+        error: function(error){
+            console.log(error)
+            alert("Error. Can't do that right now.")
+        }
+    }); 
 }
