@@ -28,7 +28,7 @@ $(document).ready( () => {
     createListeners()
     invokeCORS()
     // Establish User DB to save overhaul later
-    GET_AJAX("/api/get_user_db", (res) =>{
+    DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
         USER_CACHE = res;
     })
@@ -148,9 +148,8 @@ function parseGet(raw){
                 const nothing = response.shift()
                 CACHE.push(item);
                 let ret = makeEntry(item, container) 
-                if(ret!==false){console.log("SETTING NOT EMPTY")} 
+                if(ret!==false){ isEmpty=false } 
                 if(response.length==0 & isEmpty){
-                    console.log("EXECUTING ALERT: ", item, response)
                     alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
                 }
             } ,
@@ -208,7 +207,7 @@ function getUser(){
     // AJAX Call to server.
     // Then parses results 
     // and passes to make entry elements
-    GET_AJAX("/api/get_user_db", (res) =>{
+    DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
         parseEntries(res);
     })
@@ -258,7 +257,7 @@ function handleClickOld(e, obj){
 }
 
 var global;
-function handleClick(e, obj){
+function handleClick(event, obj){
     // Click event for when an item card is clicked.
     // obj //{Name:"", Type:""}
     
@@ -266,20 +265,19 @@ function handleClick(e, obj){
     // Do get request. If already liked, invoke delete request
     // Else, add to databases
     
-    const add_item = () =>{
+    const add_item = (item_id) =>{
         // Makes POST requests to add item to table, and returns ID of item
-        // obj //{Name:"", Type:""}
-        POST_AJAX( '/api/add_item', obj, (item_id)=>{
-            const date_str = new Date().toGMTString()
-            const user_stuff = {item_id:item_id, add_date:date_str}
-            POST_AJAX( '/api/add_to_user', user_stuff, (resp)=>{
-                alert( (resp.status==='added') ? "Added to likes" : "Couldn't add to likes")
-            })
-        } )
+        const date_str = new Date().toGMTString()
+        const user_stuff = {item_id:item_id, add_date:date_str}
+        DO_AJAX('post', '/api/add_to_user', user_stuff, (resp)=>{
+            alert( (resp.status==='added') ? "Added to likes" : "Couldn't add to likes")
+        })
     }
     const remove_item = () => {
-        
-        alert("REMOVED")
+        const user_stuff = {item_id:item_id}
+        DO_AJAX('delete', '/api/add_to_user', user_stuff, (resp)=>{
+            alert( (resp.status==='removed') ? "Removed from likes" : "Couldn't add to likes")
+        })
     }
     // USER_CACHE.forEach( (item)=>{if(item==sub){n=-1} } ) 
     //const index = USER_CACHE.indexOf(obj)
@@ -291,21 +289,26 @@ function handleClick(e, obj){
         }
         console.log(item)
     }
-    if( index < 0 ){
-        USER_CACHE.push(obj)
-        add_item();
-    }
-    else{
-        USER_CACHE.splice( index, 1 );
-        remove_item();
-    }
+    event.path[0].setAttribute('src', index<0 ? "/Images/starred.png" : "/Images/unstarred.png"  );
+
+    DO_AJAX('post', '/api/add_item', obj, (item_id)=>{
+        if( index < 0 ){
+            USER_CACHE.push(obj)
+            add_item(item_id);
+        }
+        else{
+            USER_CACHE.splice( index, 1 );
+            remove_item(item_id);
+        }
+    } )
     // Test if entry exists
 }
 
 
-function POST_AJAX(url, json_data, callBack){
+function DO_AJAX(method, url, json_data, callBack){
+    // ('method', '/api/test', {key:value}, ()=>{} )
     $.ajax({ 
-        type:"POST",
+        type:method,
         url: url,
         data: JSON.stringify( json_data ), 
         contentType: 'application/json',
@@ -313,18 +316,6 @@ function POST_AJAX(url, json_data, callBack){
         error: function(error){
             console.log(error)
             alert("Error. Can't POST that right now.")
-        }
-    }); 
-}
-function GET_AJAX(url, callBack){
-    $.ajax({ 
-        type:"GET",
-        url: url,
-        contentType: 'application/json',
-        success: (res) => {callBack(res)},
-        error: function(error){
-            console.log(error)
-            alert("Error. Can't GET that right now.")
         }
     }); 
 }

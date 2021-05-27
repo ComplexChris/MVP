@@ -136,20 +136,16 @@ function Express(){
         // Placeholder only. Not currently in use.
     })
 
-}
-
-function getItemID(item, table_name){
-    const command = `SELECT item_id FROM $2 WHERE item_name=$1 LIMIT 1;`
-    db.query(command, [item, table_name], (err, data) => {
-        res.status( (err) ? 404 : 200 )
-        res.json( (err) ? err : data.rows );
+    app.delete('/api/delete_item', (req, res) => {
+        const item_id = req.body.item_id
+        const command = `DELETE FROM user_likes WHERE liked_item_id=$1`
+        db.query(command, [item_id],  (err, data) => {
+            res.status( (err) ? 404 : 200 )
+            res.json( (err) ? err : {status:'removed'} );
+        })
     })
-}
-function addItem(item){
 
 }
-
-
 
 
 
