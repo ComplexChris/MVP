@@ -43,10 +43,33 @@
                             <span>?</span>
                             <div class='content'>
                                 <b></b>
-                                <p>Enter a piece of thier title</p>
+                                <p>Enter an artist, a movie, a show, etc.</p>
                             </div>
                         </div>
                     </div>
+
+                    <div class="field" id="input_type">
+						<label>
+							<span>Entertainment Type</span>
+							<select name="by_type", class=user_input onchange="console.log('Something is amiss...') " >
+								<option value="">Any</option>
+							</select>
+						</label>
+						<div class="tooltip help">
+							<span>?</span>
+							<div class="content">
+								<b></b>
+								<p>Choose something or choose not. What shall it be?</p>
+							</div>
+						</div>
+                        <script>
+                            const ent_types = ["Music", "Movie", "TV"]        
+                            for(let item of ent_types){
+                                let $option = $("<option>", {value:item, text:item } ) ;
+                                $("select.user_input").append( $option );
+                            }
+                        </script>
+					</div>
 
 
                     <input type="submit" value="Submit" class="submit_action">

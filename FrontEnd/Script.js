@@ -1,6 +1,8 @@
 // Create a Dropzone object
 // Capture path and store data of file locally
 
+const { json } = require("express");
+
 
 // Use Pantry ( https://getpantry.cloud/apiv1/pantry/809cff74-8863-45df-a7b8-44641613bcf8/basket/testBasket )
 // Use that to create and store variables from GoFile
@@ -142,13 +144,21 @@ function parseGet(raw){
         const container = $("div.container-display")
         container.empty()    // Empty the Cache and Display Container
         CACHE = []
+        var isEmpty = true
         for(let item of response){
             setTimeout( () => {
+                const nothing = response.shift()
                 CACHE.push(item);
-                makeEntry(item, container) } ,
+                let ret = makeEntry(item, container) 
+                if(ret!==false){console.log("SETTING NOT EMPTY")} 
+                if(response.length==0 & isEmpty){
+                    alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
+                }
+            } ,
             200)
         }
         $(".container-display").css("text-shadow", " inset 15px 14px 2px maroon" )
+        
     }
 }
 
@@ -157,7 +167,12 @@ function makeEntry(obj, parent){
     // Takes an entry from a $.get response and create a card with the data
     // Defaults to appending to the Display container
     const template = {Name:"", Type:"", ...obj}
-    if(template.Name.length<1){return}
+    if(template.Name.length<1){return false}
+    console.log("TYPE: ", template.Type)
+    const dropDown = $('select.user_input')[0].value.toLowerCase()
+    if( dropDown!=="" ){
+        if(dropDown!==template.Type){return false}
+    }
     /*
     for(let item in obj){
         if(item in template && obj[item] !== null){
@@ -196,19 +211,26 @@ function getUser(){
     // and passes to make entry elements
     GET_AJAX("/api/get_user_db", (res) =>{
         console.log("API 'get' succeeded");
-        parseUser(res);
+        parseEntries(res);
     })
 }
 
-function parseUser(json_data){
+function parseEntries(json_data){
     console.log("User data is: ", json_data)
     const container = $("div.container-display")
     container.empty()
+    let isEmpty = true
     for(item of json_data){
+        const nothing = json_data.shift()
         console.log("Passing Item: ", item)
         const obj = {Name: item.item_name, Type: item.item_type}
-        makeEntry(obj, container);
+        let ret = makeEntry(item, container) 
+        if(ret!==false){isEmpty = false} 
+        if(json_data.length==0 & isEmpty){
+            alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
+        }
     }
+    if(isEmpty) {alert("No matches found for that query. \nMaybe adjust the Entertainment Type?")}
 }
 
 
@@ -261,7 +283,15 @@ function handleClick(e, obj){
         alert("REMOVED")
     }
     // USER_CACHE.forEach( (item)=>{if(item==sub){n=-1} } ) 
-    const index = USER_CACHE.indexOf(obj)
+    //const index = USER_CACHE.indexOf(obj)
+    let index = -1;
+    for(item in USER_CACHE){
+        if( USER_CACHE[item].Name == obj.Name ){
+            index=item;
+            break
+        }
+        console.log(item)
+    }
     if( index < 0 ){
         USER_CACHE.push(obj)
         add_item();
