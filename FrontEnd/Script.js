@@ -118,12 +118,14 @@ function log_in(isSignup){
         console.log( "CRED: ", credentials )
 
         if(isSignup){
+            console.log("Signing up...")
             DO_AJAX('post', '/api/signup_user', credentials, (resp)=>{
                 console.log("POST SIGNUP RESP is: ", resp)
                 alert( (resp.status=="created") ? "Account created. Please login." : "Could not create account.")
             })
         }
         else{
+            console.log("Loggin in...")
             DO_AJAX('get', '/api/get_db_id', credentials, (resp)=>{
                 // Add to local storage
                 console.log("GET DB ID RESP is: ", resp)
