@@ -12,7 +12,7 @@ const query_master = {
 function Express(){
 
     // Establish server requirements. 
-    const DB_ID = "demo_user"
+    var DB_ID = "demo_user"
     const path = require('path');
     const express = require('express');
     const app = express();
@@ -43,6 +43,9 @@ function Express(){
         if(USER_TOKEN !== null ){
             console.log("User token passed");
             DB_ID = USER_TOKEN;
+        }
+        else{
+            DB_ID = "demo_user";
         }
     })
     app.get('/', (req, res)=>{
