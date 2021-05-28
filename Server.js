@@ -137,16 +137,15 @@ function Express(){
             ID SERIAL             NOT NULL,
             liked_item_id         INT    NOT NULL,
             date_added            CHAR(50)     NOT NULL,
-            list_id               TEXT
+            list_id               INT
         )`
         db.query(command, (err, data) => {
             if(err){ console.log("Error at signup: ", err) }
             const add_user = `
-            INSERT INTO users (username, display_name, password_hash, user_db_id )
+            INSERT INTO users (username, password_hash, user_db_id )
             VALUES ($1, $2, $3, $4);
             `
-            console.log("ARGS: ", [username, username, hash, new_db ])
-            db.query(add_user, [username, username, hash, new_db ], (err, data) => {
+            db.query(add_user, [username, hash, new_db ], (err, data) => {
                 res.status( (err) ?  (console.log(err), 400) : 200 );
                 res.json( (err) ? err : {status:"created"} );
         })
