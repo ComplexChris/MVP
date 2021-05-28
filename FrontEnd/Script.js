@@ -406,7 +406,11 @@ function handleClick(event, obj){
 
 function DO_AJAX(method, url, json_data, callBack){
     // ('method', '/api/test', {key:value}, ()=>{} )
-    const temp = window.localStorage.getItem("USER_TOKEN");
+    let temp = window.localStorage.getItem("USER_TOKEN");
+    if(temp===null){
+        temp = "demo_user"
+        alert("You're currently not signed in. \nPlease sign in to save your list. ")
+    }
     $.ajax({ 
         type:method,
         url: url,
