@@ -109,12 +109,16 @@ function log_in(isSignup){
     if( !anyInvalid ){
         // All inputs are valid, proceeding...
         // Now post inputs to get database ID
+        if(username == inp_vals.login_password ){
+            alert("Username and Password can not match")
+            return;
+        }
         const credentials = {
             username: inp_vals.login_username,
             hash:  CryptoJS.MD5( inp_vals.login_password ).toString()
         }
         console.log( "CRED: ", credentials )
-
+        
         if(isSignup){
             console.log("Signing up...")
             DO_AJAX('post', '/api/signup_user', credentials, (resp)=>{
