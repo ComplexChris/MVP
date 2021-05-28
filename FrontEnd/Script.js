@@ -161,7 +161,7 @@ function nav_bar(){
         $("h3 .nav_login").parent().remove()
 
         $("a.nav_signout").click( ()=>{
-            window.localStorage.setItem("USER_TOKEN", null)
+            window.localStorage.removeItem("USER_TOKEN")
             alert("SIGNED OUT SUCCES")
         } );
     }
