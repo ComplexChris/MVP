@@ -414,7 +414,7 @@ function DO_AJAX(method, url, json_data, callBack){
     $.ajax({ 
         type:method,
         url: url,
-        data: JSON.stringify( {...json_data, ...{USER_TOKEN:temp} } ), 
+        data: JSON.stringify( {...json_data, ...{'USER_TOKEN':temp} } ), 
         contentType: 'application/json',
         success: (res) => {callBack(res)},
         error: function(error){
