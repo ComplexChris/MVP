@@ -20,8 +20,8 @@ $(document).ready(function(){
 const __version__ = "5.3.7"
 console.log(__version__)
 
-var USER_TOKEN = window.localStorage.getItem("USER_TOKEN");
-var LOGGED_IN = (USER_TOKEN==null) ? false : true;
+
+var LOGGED_IN = (window.localStorage.getItem("USER_TOKEN")==null) ? false : true;
 
 var CACHE = [];   //{Name:"", Type:""}
 var USER_CACHE = []; //{Name:"", Type:""}
@@ -160,7 +160,10 @@ function nav_bar(){
         $("h3 .nav_signup").parent().remove()
         $("h3 .nav_login").parent().remove()
 
-        $("a.nav_signout").click( ()=>alert("SIGNED OUT SUCCES") );
+        $("a.nav_signout").click( ()=>{
+            window.localStorage.setItem("USER_TOKEN", null)
+            alert("SIGNED OUT SUCCES")
+        } );
     }
     else{
         $("h3 .nav_signout").parent().remove()

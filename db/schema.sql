@@ -8,8 +8,8 @@ CREATE TABLE users(
 
 -----------------------------------------
 
-DROP TABLE IF EXISTS user_likes;
-CREATE TABLE user_likes(
+DROP TABLE IF EXISTS demo_user;
+CREATE TABLE demo_user(
    ID SERIAL             NOT NULL,
    liked_item_id         INT    NOT NULL,
    date_added            CHAR(50)     NOT NULL,
