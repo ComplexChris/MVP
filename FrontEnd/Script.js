@@ -86,6 +86,7 @@ function open_modal(isSignup){
     container.append([
         $('<div/>', {class: "brewery-card", id: "login_modal" } ).append(  [
             $('<form/>', { onsubmit: "return false;", class:"submit_search_form", html: `
+            <h3 class="list-inline-item">${verb}</h3>
             <span>Username?</span>
             <input placeholder="Try to be unique, okay?" type="text" class='user_input' name="login_username" pattern="^(.{5,80}){1}$" title="At least 5 characters">
             <span>Password?</span>
