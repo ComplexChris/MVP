@@ -1,5 +1,5 @@
 const express = require('express');
-const { response } = require('express');
+const { response, json } = require('express');
 
 
 require('dotenv').config() // TODO: ADD THIS LINE
@@ -133,7 +133,7 @@ function Express(){
         // $1 = new_db, $2 = username
         console.log("New DB ID: ", new_db)
         command = `
-        CREATE TABLE poop(
+        CREATE TABLE $1(
             ID SERIAL             NOT NULL,
             liked_item_id         INT    NOT NULL,
             date_added            CHAR(50)     NOT NULL,
@@ -142,7 +142,7 @@ function Express(){
         db.query(command, [new_db],  (err, data) => {
             if(err){ console.log("Error at signup: ", err) }
             res.status( (err) ?  400 : 201 )
-            res.json( (err) ? err : {status:"created"} );
+            res.json( (err) ? err : JSON.stringify {status:"created"} ) );
         })
     })
 
@@ -156,7 +156,7 @@ function Express(){
             const content = ( db_id !==undefined ) ? {status:"success", db_id} : {status:"fail"}
             if(err){ console.log("Error with get db: ", err)  }
             res.status( (err) ? 400 : 200 )
-            res.json( (err) ? err : content);
+            res.json( (err) ? err : JSON.stringify(content));
         })
     })
     
