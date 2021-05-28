@@ -109,7 +109,7 @@ function log_in(isSignup){
     if( !anyInvalid ){
         // All inputs are valid, proceeding...
         // Now post inputs to get database ID
-        if(username == inp_vals.login_password ){
+        if(inp_vals.login_username == inp_vals.login_password ){
             alert("Username and Password can not match")
             return;
         }
