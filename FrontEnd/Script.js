@@ -159,7 +159,13 @@ function nav_bar(){
 
         $("a.nav_signout").click( ()=>{
             window.localStorage.removeItem("USER_TOKEN")
-            alert("SIGNED OUT SUCCES")
+            const container = $("div.container-display")
+            LOGGED_IN = false;
+            container.empty();
+            USER_CACHE = [];
+            CACHE = [];
+            alert("SIGNED OUT SUCCES");
+            nav_bar();
         } );
     }
     else{
@@ -409,7 +415,10 @@ function handleClick(event, obj){
 
 function DO_AJAX(method, url, json_data, callBack){
     // ('method', '/api/test', {key:value}, ()=>{} )
-
+    if(method!=='get'){
+        const temp = window.localStorage.getItem("USER_TOKEN");
+        if(temp!==null){ json_data['USER_TOKEN'] = temp}
+    }
     $.ajax({ 
         type:method,
         url: url,
