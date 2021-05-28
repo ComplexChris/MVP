@@ -62,7 +62,6 @@ function Express(){
         //const command = `SELECT * FROM user_likes `
         const command = ` SELECT item_name, item_type FROM single_items 
                         JOIN user_likes ON item_id=liked_item_id;`
-        console.log(req);
         db.query(command, (err, data) => {
             res.status( (err) ? 404 : 200 )
             res.json( (err) ? err : data.rows );
