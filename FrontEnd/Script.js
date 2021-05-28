@@ -229,7 +229,7 @@ function parseEntries(raw_json){
     console.log("Candy? \n",  raw_json)
     let response = [ ...raw_json ]
     if(response.length<1){
-        alert("No matches found for that query. \nPlease try another search")
+        alert("Sorry, I have nothing to show for that.\nPlease try a search.")
         return
     }
     else{
@@ -407,16 +407,14 @@ function handleClick(event, obj){
 function DO_AJAX(method, url, json_data, callBack){
     // ('method', '/api/test', {key:value}, ()=>{} )
     let temp = window.localStorage.getItem("USER_TOKEN");
-    if(temp===null){
-        temp = "demo_user"
-        window.localStorage.setItem("USER_TOKEN", temp);
+    if(temp===null & method!="get"){
         alert("You're currently not signed in. \nPlease sign in to save your list. ")
     }
     console.log(JSON.stringify({...json_data, ...{'USER_TOKEN':temp} }) )
     $.ajax({ 
         type:method,
         url: url,
-        data:  {...json_data, ...{'USER_TOKEN':temp} } , 
+        data:  JSON.stringify( json_data ) , 
         contentType: 'application/json',
         success: (res) => {callBack(res)},
         error: function(error){
