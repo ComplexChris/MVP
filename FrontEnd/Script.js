@@ -130,6 +130,7 @@ function log_in(isSignup){
                 console.log("GET DB ID RESP is: ", resp)
                 if(resp.status=="success"){
                     window.localStorage.setItem("USER_TOKEN", resp.db_id)
+                    $("div.container-display").empty()
                     LOGGED_IN = true
                     nav_bar()
                 }
@@ -159,9 +160,8 @@ function nav_bar(){
 
         $("a.nav_signout").click( ()=>{
             window.localStorage.removeItem("USER_TOKEN")
-            const container = $("div.container-display")
+            $("div.container-display").empty();
             LOGGED_IN = false;
-            container.empty();
             USER_CACHE = [];
             CACHE = [];
             alert("SIGNED OUT SUCCES");
@@ -368,7 +368,7 @@ function handleClick(event, obj){
     // Do get request. If already liked, invoke delete request
     // Else, add to databases
     if(!LOGGED_IN){
-        alert("You're currently not signed in. \nPlease sign in to save your list. ")
+        alert("You're currently not signed in. \nPlease sign in to save your progress. ")
         return;
     }
     
