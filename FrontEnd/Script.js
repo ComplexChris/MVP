@@ -125,7 +125,7 @@ function log_in(isSignup){
         }
         else{
             console.log("Loggin in...")
-            DO_AJAX('get', '/api/get_db_id', credentials, (resp)=>{
+            DO_AJAX('post', '/api/get_db_id', credentials, (resp)=>{
                 // Add to local storage
                 console.log("GET DB ID RESP is: ", resp)
                 if(resp.status=="success"){

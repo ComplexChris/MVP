@@ -147,7 +147,7 @@ function Express(){
         // $1 = new_db, $2 = username
         console.log("New DB ID: ", new_db)
         command = `
-        CREATE TABLE ${new_db}(
+        CREATE TABLE IF NOT EXISTS ${new_db}(
             ID SERIAL             NOT NULL,
             liked_item_id         INT    NOT NULL,
             date_added            CHAR(50)     NOT NULL,
@@ -166,7 +166,7 @@ function Express(){
     })
 })
 
-    app.get('/api/get_db_id' , (req, res) => {
+    app.post('/api/get_db_id' , (req, res) => {
         // Gets database ID
         const {username, hash} = req.body;
         const command = `SELECT user_db_id FROM users where username=$1 AND password_hash=$2 LIMIT 1;`
