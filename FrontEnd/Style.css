@@ -8,10 +8,10 @@
     padding:35px;
     border-radius: 100px;
 
-    /* background-image: url("./barrels2.jpg");
+    background-image: url("./Images/body_img.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: cover; */
+    background-size: cover;
 }
 
 .container-root{
@@ -42,7 +42,11 @@
     box-sizing:border-box;
     padding: 5%;
     box-shadow: 5px 4px 20px red;
-    
+    background-image: url("./Images/head_img.jpeg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: bottom;
 }
 
 .container-display{
@@ -98,9 +102,14 @@ label span{
     margin-top: 20px;
     border-radius: 30px;
     box-shadow: 5px 4px 10px rgb(87, 255, 238)  ;
-    text-shadow: -9px 5px 14px maroon ;
+    text-shadow: -9px 5px 14px rgb(39, 38, 38) ;
     width:80%;
     margin-left: 10%;
+    /* background-image: url("./Images/card_img.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: bottom; */
 }
 
 .brewery-card-left{
@@ -108,7 +117,7 @@ label span{
     flex-direction: column;
     margin: auto;
     padding: 7px;
-    font-size: 14pt;
+    font-size: 18pt;
     width: 80%;
 }
 .brewery-card-right{
