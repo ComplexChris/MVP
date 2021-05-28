@@ -30,10 +30,7 @@ var LOCATION;
 $(document).ready( () => {
     createListeners()
     // Establish User DB to save overhaul later
-    DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
-        console.log("API 'get' succeeded");
-        USER_CACHE = res;
-    })
+    if(LOGGED_IN){ getUser() }
 } )
 
 
@@ -310,6 +307,7 @@ function getUser(){
         USER_CACHE = converted;
         parseEntries(converted);
     })
+
 }
 
 function parseEntriesOLD(json_data){
