@@ -137,7 +137,7 @@ function Express(){
             ID SERIAL             NOT NULL,
             liked_item_id         INT    NOT NULL,
             date_added            CHAR(50)     NOT NULL,
-            list_id               INT
+            list_id               TEXT
         )`
         db.query(command, (err, data) => {
             if(err){ console.log("Error at signup: ", err) }
