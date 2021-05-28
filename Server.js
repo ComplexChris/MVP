@@ -171,7 +171,6 @@ function Express(){
         // Gets database ID
         const {username, hash} = req.body;
         const command = `SELECT user_db_id FROM users WHERE username=$1 AND password_hash=$2 LIMIT 1;`
-        SELECT user_db_id FROM users WHERE username='chrisn' AND password_hash='2adca9b16a5513ec49014809c722f89a' LIMIT 1
         db.query(command, [username, hash],  (err, data) => {
             const db_id = data.rows[0].user_db_id
             console.log("DB ID: ", db_id)
