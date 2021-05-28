@@ -126,6 +126,38 @@ function Express(){
             }
         })
     })
+
+    app.post('/api/signup_user', (req, res) => {
+        // Creates user database
+        const {username, hash} = req.body;
+        const new_db =  (hash+username).split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+        // $1 = new_db, $2 = username
+        console.log("New DB ID: ", new_db)
+        command = `
+        CREATE TABLE poop(
+            ID SERIAL             NOT NULL,
+            liked_item_id         INT    NOT NULL,
+            date_added            CHAR(50)     NOT NULL,
+            list_id               INT
+        )`
+        db.query(command, [new_db],  (err, data) => {
+            res.status( (err) ? 404 : 200 )
+            res.json( (err) ? err : {status:"created"} );
+        })
+    })
+
+    app.post('/api/get_db_id' , (req, res) => {
+        // Gets database ID
+        const {username, hash} = req.body;
+        const command = `SELECT user_db_id FROM users where username=$1 AND password_hash=$2 LIMIT 1;`
+        db.query(command, [username, hash],  (err, data) => {
+            const db_id = data.rows.user_db_id
+            console.log("DB ID: ", db_id)
+            const content = ( db_id !==undefined ) ? {status:"success", db_id} : {status:"fail"}
+            res.status( (err) ? 404 : 200 )
+            res.json( (err) ? err : content);
+        })
+    })
     
 
     app.put('/api/save_entry', (req, res) => {

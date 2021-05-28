@@ -68,20 +68,18 @@ function createListeners(){
     user_page.click( getUser );
     const home_page = $("a.nav_home");
     home_page.click( getHome );
-    const home_page = $("a.nav_login");
-    home_page.click( open_modal );
+    const login_page = $("a.nav_login");
+    login_page.click( open_modal );
+    const signup_page = $("a.nav_signup");
+    signup_page.click( ()=>open_modal(true) );
 
-    const login_page = $("input#login_submit")
-    login_page.click((ev) => {
-        console.log("YOU PRESSSED THE BUTTON!!!")
-    })
 
     console.log("User action set")
 }
 
 var LOGGED_IN = false
 
-function open_modal(){
+function open_modal(isSignup){
     
     const container = $("div.container-display")
     container.empty()    // Empty the Cache and Display Container
@@ -97,13 +95,48 @@ function open_modal(){
             )
         ])     // Card Closer
     ])
-    const login_page = $("input#login_submit")
-    login_page.click( log_in )
+    const modal_page = $("input#login_submit")
+    const action = (isSignup==true) ? ()=>log_in(true) : log_in
+    modal_page.click( action )
+
 }
 
-function log_in(){
+function log_in(isSignup){
+    // Get DB ID. Set in storage
+    // If not, revoke
+    console.log("Creating user session...")
     const inp_vals = getInputs(  $("#login_modal .user_input"))    // {login_username: "name", login_password: "password"}
+    const vals_only = Object.values(inp_vals) 
+    const anyInvalid = vals_only.some ( (item)=>{ return item.length<5 }) 
+    if( !anyInvalid ){
+        // All inputs are valid, proceeding...
+        // Now post inputs to get database ID
+        const credentials = {
+            username: inp_vals.login_username,
+            hash:  CryptoJS.MD5( inp_vals.login_password ).toString()
+        }
+        console.log( "CRED: ", credentials )
 
+        if(isSignup){
+            DO_AJAX('get', '/api/signup_user', credentials, (resp)=>{
+                alert( (resp.status=="created") ? "Account created. Please login." : "Could not create account.")
+            })
+        }
+        else{
+            DO_AJAX('get', '/api/get_db_id', credentials, (resp)=>{
+                // Add to local storage
+                if(resp){
+                    LOGGED_IN = true
+                    window.localStorage.setItem("USER_TOKEN", )
+                }
+                alert( (LOGGED_IN) ? `Welcome, ${credentials.username}` : "Sorry, couldn't find your account." )
+            })
+        }
+
+    }
+    else{
+        alert("Invalid Entry")
+    }
 }
 
 function  start_here(search=false){
