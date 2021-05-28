@@ -83,6 +83,7 @@ function open_modal(isSignup){
     
     const container = $("div.container-display")
     container.empty()    // Empty the Cache and Display Container
+    const verb = (isSignup) ? "Sign Up" : "Log In";
     container.append([
         $('<div/>', {class: "brewery-card", id: "login_modal" } ).append(  [
             $('<form/>', { onsubmit: "return false;", class:"submit_search_form", html: `
@@ -90,7 +91,7 @@ function open_modal(isSignup){
             <input placeholder="Try to be unique, okay?" type="text" class='user_input' name="login_username" pattern="^(.{5,80}){1}$" title="At least 5 characters">
             <span>Password?</span>
             <input placeholder="Make it secured" type="password" class='user_input' name="login_password" pattern="^(.{5,80}){1}$" title="At least 5 characters">
-            <input type="submit" value="Submit" class="submit_action" id="login_submit">
+            <input type="submit" value='${verb}' class="submit_action" id="login_submit">
             `}
             )
         ])     // Card Closer
