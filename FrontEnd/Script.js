@@ -216,7 +216,7 @@ function getURL(input_map){
     //const apiURL = "https://cors-anywhere.herokuapp.com/http://api.openbrewerydb.org/breweries?"
     //const apiURL = "https://api.openbrewerydb.org/breweries?per_page=75&"
     const cors = 'https://cors-anywhere.herokuapp.com/'
-    const apiURL = `https://tastedive.com/api/similar?k=414580-API-GZ2B02NL&q=${input_map.by_name}`
+    const apiURL = `https://tastedive.com/api/similar?info=1&k=414580-API-GZ2B02NL&q=${input_map.by_name}`
     return cors+apiURL;
 
     let newURL = apiURL
@@ -266,7 +266,7 @@ function makeEntry(obj, parent){
     //console.log("OBJECT IS: ", obj)
     // Takes an entry from a $.get response and create a card with the data
     // Defaults to appending to the Display container
-    const template = {Name:"", Type:"", Star:false, ...obj}    // Destructure to overwrite new values
+    const template = {Name:"", Type:"", wTeaser:"", Star:false, ...obj}    // Destructure to overwrite new values
     if(template.Name.length<1){return false}
     const dropDown = $('select.user_input')[0].value.toLowerCase()
     if( dropDown!=="" ){
@@ -286,7 +286,11 @@ function makeEntry(obj, parent){
             $('<div/>', {class: "brewery-card-left"} ).append([    
                 $('<div/>', {class: "details", text:template.Name, id:template.id  }),       // Header for top of entry
                 $("<br>"),  
-                $('<div/>', {class: "details", text:`| Type: ${template.Type}`})    // Span for displaying additional content
+                $('<div/>', {class: "details", text:` Type: ${template.Type}`}) ,   // Span for displaying additional content
+                $("<br>"),
+                $('<a/>', {class: "details", id:"extra_stuff", target:"_blank", href:template.wUrl, text:` Wiki Link: ${template.wUrl}`}), $("<br>"),
+                $('<a/>', {class: "details", id:"extra_stuff", target:"_blank", href:template.yUrl, text:` Youtube Link: ${template.yUrl}`}), $("<br>"),
+                $('<div/>', {class: "details", id:"extra_stuff", text:` Description: \n\t${template.wTeaser}`})    // Span for displaying additional content
             ]),
             $('<div/>', {class: "brewery-card-right"} ).append([ 
                 $('<div/>', {class:'details-right', html:`<img src="${image_url}">`, onclick:`handleClick(event, ${JSON.stringify(obj)} )`})       // Header for top of entry

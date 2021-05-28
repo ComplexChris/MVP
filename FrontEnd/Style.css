@@ -21,7 +21,7 @@
     align-self: center;
     min-height: 700px;
     height:100%;
-    width: 50%;
+    width: 75%;
     padding:35px;
     border-radius: 100px;
     background: rgba(50, 51, 48, 0.5);
@@ -57,6 +57,8 @@
     margin-top: 10%;
     height: 80%;
     width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
     
 }
 
@@ -104,7 +106,9 @@ label span{
     box-shadow: 5px 4px 10px rgb(87, 255, 238)  ;
     text-shadow: -9px 5px 14px rgb(39, 38, 38) ;
     width:80%;
+    min-height: 20%;
     margin-left: 10%;
+    overflow-y: auto;
     /* background-image: url("./Images/card_img.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -120,6 +124,11 @@ label span{
     font-size: 18pt;
     width: 80%;
 }
+
+#extra_stuff{
+    font-size: 8pt;
+}
+
 .brewery-card-right{
     display:flex;
     margin: auto;
