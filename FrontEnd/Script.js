@@ -30,7 +30,7 @@ var LOCATION;
 $(document).ready( () => {
     createListeners()
     // Establish User DB to save overhaul later
-    if(LOGGED_IN){ getUser() }
+    //if(LOGGED_IN){ getUser() }
 } )
 
 
@@ -237,7 +237,7 @@ function parseEntries(raw_json){
     console.log("Candy? \n",  raw_json)
     let response = [ ...raw_json ]
     if(response.length<1){
-        alert("Sorry, I have nothing to show for that.\nPlease try a search.")
+        alert("Sorry, I have nothing to show for that.\nPlease try a search.");
         return
     }
     else{
