@@ -142,7 +142,7 @@ function Express(){
         db.query(command, [new_db],  (err, data) => {
             if(err){ console.log("Error at signup: ", err) }
             res.status( (err) ?  400 : 201 )
-            res.json( (err) ? err : JSON.stringify {status:"created"} ) );
+            res.json( (err) ? err : JSON.stringify {status:"created"} );
         })
     })
 
