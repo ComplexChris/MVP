@@ -289,8 +289,12 @@ function makeEntry(obj, parent){
 function getHome(){
     const container = $("div.container-display")
     container.empty()
-    parseEntries(CACHE)
-    
+    if(CACHE.length===0){
+        alert("Try starting with a basic search.")
+    }
+    else{
+        parseEntries(CACHE)
+    }
 }
 
 function getUser(){
