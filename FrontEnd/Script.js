@@ -26,7 +26,6 @@ var LOCATION;
 
 $(document).ready( () => {
     createListeners()
-    invokeCORS()
     // Establish User DB to save overhaul later
     DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
@@ -34,13 +33,7 @@ $(document).ready( () => {
     })
 } )
 
-// function invokeCORS(){
-//     const token = `489367e738051a270dc7ea09c494a6764b81a5f6cb21b37ec0fafa142ddaa871`
-//     const url = `https://cors-anywhere.herokuapp.com/corsdemo?accessRequest=${token}`
-//     GET_AJAX(url, (res)=>{
-//         console.log("CORS response: ", res)
-//     })
-// }
+
 function Callback(e){
     // Primary callback for submitting user input
     // Will invoke external API
@@ -73,13 +66,45 @@ function createListeners(){
 
     const user_page = $("a.nav_user");
     user_page.click( getUser );
-
     const home_page = $("a.nav_home");
     home_page.click( getHome );
+    const home_page = $("a.nav_login");
+    home_page.click( open_modal );
+
+    const login_page = $("input#login_submit")
+    login_page.click((ev) => {
+        console.log("YOU PRESSSED THE BUTTON!!!")
+    })
 
     console.log("User action set")
 }
 
+var LOGGED_IN = false
+
+function open_modal(){
+    
+    const container = $("div.container-display")
+    container.empty()    // Empty the Cache and Display Container
+    container.append([
+        $('<div/>', {class: "brewery-card", id: "login_modal" } ).append(  [
+            $('<form/>', { onsubmit: "return false;", class:"submit_search_form", html: `
+            <span>Username?</span>
+            <input placeholder="Try to be unique, okay?" type="text" class='user_input' name="login_username" pattern="^(.{5,80}){1}$" title="At least 5 characters">
+            <span>Password?</span>
+            <input placeholder="Make it secured" type="password" class='user_input' name="login_password" pattern="^(.{5,80}){1}$" title="At least 5 characters">
+            <input type="submit" value="Submit" class="submit_action" id="login_submit">
+            `}
+            )
+        ])     // Card Closer
+    ])
+    const login_page = $("input#login_submit")
+    login_page.click( log_in )
+}
+
+function log_in(){
+    const inp_vals = getInputs(  $("#login_modal .user_input"))    // {login_username: "name", login_password: "password"}
+
+}
 
 function  start_here(search=false){
     
@@ -87,7 +112,11 @@ function  start_here(search=false){
         const input_map = getInputs()
         const URL = getURL( input_map )
         console.log(URL)
-        const API_Results = invokeGet( URL )
+        const API_Results = DO_AJAX('get', URL, {}, (response) =>{ 
+            const results = response.Similar.Results
+            CACHE = [...results]    // results = Array of Objects [ {}, {} ]
+            parseEntries( results ) 
+        })
         console.log("URL: " + URL)
         //this.Final = this.
     }
@@ -127,13 +156,10 @@ function getURL(input_map){
     }
     return(newURL);
 }
-function invokeGet(URL){
-    $.get(URL, (data) => {parseGet(data)} )
-}
-function parseGet(raw){
-    console.log("Candy? \n",  raw)
-    let parsed = raw //JSON.parse( raw )
-    let response = parsed.Similar.Results
+
+function parseEntries(raw_json){
+    console.log("Candy? \n",  raw_json)
+    let response = [ ...raw_json ]
     if(response.length<1){
         alert("No matches found for that query. \nPlease try another search")
         return
@@ -141,13 +167,14 @@ function parseGet(raw){
     else{
         const container = $("div.container-display")
         container.empty()    // Empty the Cache and Display Container
-        CACHE = []
         var isEmpty = true
+
+        const user_items =  USER_CACHE.map( (user_likes)=>{return(user_likes.Name)} ) ;
         for(let item of response){
             setTimeout( () => {
                 const nothing = response.shift()
-                CACHE.push(item);
-                let ret = makeEntry(item, container) 
+                item['Star'] = user_items.indexOf(item.Name) >= 0  ;   // item object now has 3 entries
+                let ret = makeEntry(item, container); 
                 if(ret!==false){ isEmpty=false } 
                 if(response.length==0 & isEmpty){
                     alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
@@ -161,10 +188,10 @@ function parseGet(raw){
 }
 
 function makeEntry(obj, parent){
-    console.log("OBJECT IS: ", obj)
+    //console.log("OBJECT IS: ", obj)
     // Takes an entry from a $.get response and create a card with the data
     // Defaults to appending to the Display container
-    const template = {Name:"", Type:"", ...obj}
+    const template = {Name:"", Type:"", Star:false, ...obj}    // Destructure to overwrite new values
     if(template.Name.length<1){return false}
     console.log("TYPE: ", template.Type)
     const dropDown = $('select.user_input')[0].value.toLowerCase()
@@ -179,6 +206,7 @@ function makeEntry(obj, parent){
     }   */
     // Uses standard structure for displaying elements
     //const $header = $('<div/>', {class: "title", text=template.name})
+    const image_url = (template.Star) ? './Images/starred.png' : './Images/unstarred.png' ;
     parent.append([
         $('<div/>', {class: "brewery-card" } ).append(  [ 
             $('<div/>', {class: "brewery-card-left"} ).append([    
@@ -187,7 +215,7 @@ function makeEntry(obj, parent){
                 $('<div/>', {class: "details", text:`| Type: ${template.Type}`})    // Span for displaying additional content
             ]),
             $('<div/>', {class: "brewery-card-right"} ).append([ 
-                $('<button/>', {class:'details-right', html:'<img src="./Images/unstarred.png">', onclick:`handleClick(event, ${JSON.stringify(obj)} )`})       // Header for top of entry
+                $('<button/>', {class:'details-right', html:`<img src="${image_url}">`, onclick:`handleClick(event, ${JSON.stringify(obj)} )`})       // Header for top of entry
             ])
         ]),  // Closer for div element
 
@@ -209,11 +237,12 @@ function getUser(){
     // and passes to make entry elements
     DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
-        parseEntries(res);
+        const converted = res.map((item)=>{return {Name:item.item_name, Type:item.item_type}})
+        parseEntries(converted);
     })
 }
 
-function parseEntries(json_data){
+function parseEntriesOLD(json_data){
     console.log("User data is: ", json_data)
     const container = $("div.container-display")
     container.empty()
@@ -315,7 +344,7 @@ function DO_AJAX(method, url, json_data, callBack){
         success: (res) => {callBack(res)},
         error: function(error){
             console.log(error)
-            alert("Error. Can't POST that right now.")
+            alert(`Error. Can't ${method.toUpperCase() } that right now.`)
         }
     }); 
 }
