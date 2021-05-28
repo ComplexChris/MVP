@@ -253,7 +253,7 @@ function makeEntry(obj, parent){
                 $('<div/>', {class: "details", text:`| Type: ${template.Type}`})    // Span for displaying additional content
             ]),
             $('<div/>', {class: "brewery-card-right"} ).append([ 
-                $('<button/>', {class:'details-right', html:`<img src="${image_url}">`, onclick:`handleClick(event, ${JSON.stringify(obj)} )`})       // Header for top of entry
+                $('<div/>', {class:'details-right', html:`<img src="${image_url}">`, onclick:`handleClick(event, ${JSON.stringify(obj)} )`})       // Header for top of entry
             ])
         ]),  // Closer for div element
 

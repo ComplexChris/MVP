@@ -120,6 +120,8 @@ label span{
 }
 .details-right{
     border:none;
+    max-width: 70%;
+    max-height: 70%;
 }
 
 .brewery-card:nth-child(2n){
@@ -141,6 +143,7 @@ label span{
 img {
     max-width: 100%;
     max-height: 100%;
+    cursor: pointer;
 }
 
 
