@@ -37,17 +37,19 @@ function Express(){
     });
 
 
-    app.use((req, res)=>{
+    app.use((req, res, next)=>{
         console.log("Middleware detected another request!!!");
         const {USER_TOKEN} = req.body;
-        console.log( req.body)
-        if(USER_TOKEN !== null ){
+        console.log("BODY PASSED: ",  req.body)
+        if(USER_TOKEN !== undefined ){
             console.log("User token passed: ", USER_TOKEN);
             DB_ID = USER_TOKEN;
         }
         else{
+            // Send back to use
             DB_ID = "demo_user";
         }
+        next()
     })
     app.get('/', (req, res)=>{
         console.log("HOME DIRECTORY");
