@@ -40,7 +40,7 @@ function Express(){
     app.use((req, res)=>{
         console.log("Middleware detected another request!!!");
         const {USER_TOKEN} = req.body;
-        console.log( req.body )
+        console.log( req.body)
         if(USER_TOKEN !== null ){
             console.log("User token passed: ", USER_TOKEN);
             DB_ID = USER_TOKEN;
