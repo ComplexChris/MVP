@@ -12,6 +12,7 @@ const query_master = {
 function Express(){
 
     // Establish server requirements. 
+    const DB_ID = "demo_user"
     const path = require('path');
     const express = require('express');
     const app = express();
@@ -36,7 +37,14 @@ function Express(){
     });
 
 
-
+    app.use((req, res)=>{
+        console.log("Middleware detected another request!!!");
+        const {USER_TOKEN} = req.body;
+        if(USER_TOKEN !== null ){
+            console.log("User token passed");
+            DB_ID = USER_TOKEN;
+        }
+    })
     app.get('/', (req, res)=>{
         console.log("HOME DIRECTORY");
         res.sendFile( path.join(__dirname, "./FrontEnd/index.html") )
@@ -58,9 +66,9 @@ function Express(){
 
     app.get('/api/get_user_db', (req, res) => {
         // Gets entire user database. Returns row entries. {}
-        //const command = `SELECT * FROM user_likes `
+        //const command = `SELECT * FROM ${DB_ID} `
         const command = ` SELECT item_name, item_type FROM single_items 
-                        JOIN user_likes ON item_id=liked_item_id;`
+                        JOIN ${DB_ID} ON item_id=liked_item_id;`
         db.query(command, (err, data) => {
             res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : data.rows );
@@ -83,8 +91,8 @@ function Express(){
     app.post('/api/add_to_user', (req, res) => {
         const [item_id, add_date] = [req.body.item_id, req.body.add_date]
         const command = `
-        INSERT INTO user_likes (liked_item_id, date_added, list_id) SELECT $1, $2, 0
-        WHERE NOT EXISTS( SELECT * FROM user_likes WHERE liked_item_id=$1 )
+        INSERT INTO ${DB_ID} (liked_item_id, date_added, list_id) SELECT $1, $2, 0
+        WHERE NOT EXISTS( SELECT * FROM ${DB_ID} WHERE liked_item_id=$1 )
         `
         db.query(command, [item_id, add_date],  (err, data) => {
             res.status( (err) ? (console.log(err), 400) : 200 )
@@ -177,7 +185,7 @@ function Express(){
 
     app.delete('/api/delete_item', (req, res) => {
         const {item_id} = req.body;
-        const command = `DELETE FROM user_likes WHERE liked_item_id=$1`
+        const command = `DELETE FROM ${DB_ID} WHERE liked_item_id=$1`
         db.query(command, [item_id],  (err, data) => {
             res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : {status:'removed'} );

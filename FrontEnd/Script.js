@@ -399,10 +399,11 @@ function handleClick(event, obj){
 
 function DO_AJAX(method, url, json_data, callBack){
     // ('method', '/api/test', {key:value}, ()=>{} )
+    const temp = window.localStorage.getItem("USER_TOKEN");
     $.ajax({ 
         type:method,
         url: url,
-        data: JSON.stringify( json_data ), 
+        data: JSON.stringify( {...json_data, ...{USER_TOKEN:temp} } ), 
         contentType: 'application/json',
         success: (res) => {callBack(res)},
         error: function(error){
