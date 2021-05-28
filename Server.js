@@ -1,6 +1,6 @@
 const express = require('express');
 const { response } = require('express');
-
+const cors = require('cors');
 
 require('dotenv').config() // TODO: ADD THIS LINE
 
