@@ -20,6 +20,9 @@ $(document).ready(function(){
 const __version__ = "5.3.7"
 console.log(__version__)
 
+var USER_TOKEN = window.localStorage.getItem("USER_TOKEN");
+var LOGGED_IN = (USER_TOKEN==null) ? false : true;
+
 var CACHE = [];   //{Name:"", Type:""}
 var USER_CACHE = []; //{Name:"", Type:""}
 var LOCATION;
@@ -68,16 +71,12 @@ function createListeners(){
     user_page.click( getUser );
     const home_page = $("a.nav_home");
     home_page.click( getHome );
-    const login_page = $("a.nav_login");
-    login_page.click( ()=>open_modal(false) );
-    const signup_page = $("a.nav_signup");
-    signup_page.click( ()=>open_modal(true) );
-
+    
+    
+    nav_bar();
 
     console.log("User action set")
 }
-
-var LOGGED_IN = false
 
 function open_modal(isSignup){
     
@@ -132,7 +131,7 @@ function log_in(isSignup){
                 console.log("GET DB ID RESP is: ", resp)
                 if(resp.status=="success"){
                     LOGGED_IN = true
-                    window.localStorage.setItem("USER_TOKEN", )
+                    window.localStorage.setItem("USER_TOKEN", resp.db_id)
                 }
                 alert( (LOGGED_IN) ? `Welcome, ${credentials.username}` : "Sorry, couldn't find your account." )
             })
@@ -144,6 +143,26 @@ function log_in(isSignup){
     }
 }
 
+function nav_bar(){
+    const logged_out = `
+    <h3 class="list-inline-item"><a class="nav_login" href="#"> Login</a></h3>
+    <h3 class="list-inline-item"><a class="nav_signup" href="#"> Signup</a></h3>
+    `
+    const logged_in = `
+    <h3 class="list-inline-item"><a class="nav_signout" href="#"> Signout</a></h3>
+    `
+    const parent = $("ul.list-inline-container")
+    parent.append( (LOGGED_IN) ? logged_in : logged_out )
+    if(LOGGED_IN){
+        $("a.nav_signout").click( ()=>alert("SIGNED OUT SUCCES") );
+    }
+    else{
+        $("a.nav_login").click( ()=>open_modal(false) );
+        $("a.nav_signup").click( ()=>open_modal(true) );
+    }
+    
+
+}
 function  start_here(search=false){
     
     if( search ){
