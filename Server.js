@@ -139,7 +139,7 @@ function Express(){
             date_added            CHAR(50)     NOT NULL,
             list_id               INT
         )`
-        db.query(command, [new_db],  (err, data) => {
+        db.query(command, (err, data) => {
             if(err){ console.log("Error at signup: ", err) }
             res.status( (err) ?  400 : 201 )
             res.json( (err) ? err : {status:"created"} );
