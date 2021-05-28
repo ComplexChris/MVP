@@ -156,9 +156,10 @@ function Express(){
         db.query(command, (err, data) => {
             if(err){ console.log("Error at signup: ", err) }
             const add_user = `
-            INSERT INTO users (username, password_hash, user_db_id )
-            VALUES ($1, $2, $3, $4);
+            INSERT INTO users (username, password_hash, user_db_id ) SELECT $1, $2, $3
+            WHERE NOT EXISTS( SELECT * FROM users WHERE username=$1 )
             `
+            
             db.query(add_user, [username, hash, new_db ], (err, data) => {
                 res.status( (err) ?  (console.log(err), 400) : 200 );
                 res.json( (err) ? err : {status:"created"} );
