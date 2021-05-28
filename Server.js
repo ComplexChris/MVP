@@ -70,7 +70,7 @@ function Express(){
         })
     })
 
-    app.get('/api/get_user_db', (req, res) => {
+    app.post('/api/get_user_db', (req, res) => {
         // Gets entire user database. Returns row entries. {}
         //const command = `SELECT * FROM ${DB_ID} `
         const command = ` SELECT item_name, item_type FROM single_items 

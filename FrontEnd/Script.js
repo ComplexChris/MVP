@@ -316,7 +316,7 @@ function getUser(){
     // AJAX Call to server.
     // Then parses results 
     // and passes to make entry elements
-    DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
+    DO_AJAX('post', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
         const converted = res.map((item)=>{return {Name:item.item_name, Type:item.item_type}})
         USER_CACHE = converted;
@@ -325,48 +325,6 @@ function getUser(){
 
 }
 
-function parseEntriesOLD(json_data){
-    console.log("User data is: ", json_data)
-    const container = $("div.container-display")
-    container.empty()
-    let isEmpty = true
-    for(item of json_data){
-        const nothing = json_data.shift()
-        console.log("Passing Item: ", item)
-        const obj = {Name: item.item_name, Type: item.item_type}
-        let ret = makeEntry(item, container) 
-        if(ret!==false){isEmpty = false} 
-        if(json_data.length==0 & isEmpty){
-            alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
-        }
-    }
-    if(isEmpty) {alert("Sorry, couldn't find any items in your favorites that match that Entertainment Type.")}
-}
-
-
-function handleClickOld(e, obj){
-    //alert("You clicked: ", obj)
-    console.log("Raw obj: ", obj) //inst.CACHE[name] )
-    // Do get request. If already liked, invoke delete request
-    // Else, add to databases
-    const create = () =>{
-        $.post({
-            url: "/api/save_entry",
-            data: JSON.stringify( obj ),
-            contentType: "application/json",
-            success: function(resultData) { alert("Save Complete") }
-        });
-    }
-    const remove = () => {
-
-    }
-
-    // Test if entry exists
-
-
-
-    //saveData.error(function() { alert("Something went wrong"); });
-}
 
 var global;
 function handleClick(event, obj){
