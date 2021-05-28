@@ -129,11 +129,11 @@ function Express(){
         // Creates user database
         const {username, hash} = req.body;
         const gen_db =  (hash+username).split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
-        const new_db = "test_db_only" // "db_"+Math.abs( gen_db )
+        const new_db = "db_"+Math.abs( gen_db )
         // $1 = new_db, $2 = username
         console.log("New DB ID: ", new_db)
         command = `
-        CREATE TABLE $1 (
+        CREATE TABLE ${new_db}(
             ID SERIAL             NOT NULL,
             liked_item_id         INT    NOT NULL,
             date_added            CHAR(50)     NOT NULL,

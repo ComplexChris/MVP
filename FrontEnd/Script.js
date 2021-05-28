@@ -96,7 +96,7 @@ function open_modal(isSignup){
         ])     // Card Closer
     ])
     const modal_page = $("input#login_submit")
-    const action = (isSignup==true) ? ()=>log_in(true) : log_in
+    const action = (isSignup==true) ? ()=>log_in(true) : ()=>log_in(false) 
     modal_page.click( action )
 
 }
@@ -130,8 +130,9 @@ function log_in(isSignup){
                 // Add to local storage
                 console.log("GET DB ID RESP is: ", resp)
                 if(resp.status=="success"){
-                    LOGGED_IN = true
                     window.localStorage.setItem("USER_TOKEN", resp.db_id)
+                    LOGGED_IN = true
+                    nav_bar()
                 }
                 alert( (LOGGED_IN) ? `Welcome, ${credentials.username}` : "Sorry, couldn't find your account." )
             })
@@ -151,12 +152,17 @@ function nav_bar(){
     const logged_in = `
     <h3 class="list-inline-item"><a class="nav_signout" href="#"> Signout</a></h3>
     `
-    const parent = $("ul.list-inline-container")
+    const parent = $(".container-header ul.list-inline-container")
     parent.append( (LOGGED_IN) ? logged_in : logged_out )
     if(LOGGED_IN){
+        $("h3 .nav_signup").parent().remove()
+        $("h3 .nav_login").parent().remove()
+
         $("a.nav_signout").click( ()=>alert("SIGNED OUT SUCCES") );
     }
     else{
+        $("h3 .nav_signout").parent().remove()
+
         $("a.nav_login").click( ()=>open_modal(false) );
         $("a.nav_signup").click( ()=>open_modal(true) );
     }
