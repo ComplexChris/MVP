@@ -118,14 +118,16 @@ function log_in(isSignup){
         console.log( "CRED: ", credentials )
 
         if(isSignup){
-            DO_AJAX('get', '/api/signup_user', credentials, (resp)=>{
+            DO_AJAX('post', '/api/signup_user', credentials, (resp)=>{
+                console.log("POST SIGNUP RESP is: ", resp)
                 alert( (resp.status=="created") ? "Account created. Please login." : "Could not create account.")
             })
         }
         else{
             DO_AJAX('get', '/api/get_db_id', credentials, (resp)=>{
                 // Add to local storage
-                if(resp){
+                console.log("GET DB ID RESP is: ", resp)
+                if(resp.status=="success"){
                     LOGGED_IN = true
                     window.localStorage.setItem("USER_TOKEN", )
                 }
@@ -335,9 +337,9 @@ function handleClick(event, obj){
             alert( (resp.status==='added') ? "Added to likes" : "Couldn't add to likes")
         })
     }
-    const remove_item = () => {
+    const remove_item = (item_id) => {
         const user_stuff = {item_id:item_id}
-        DO_AJAX('delete', '/api/add_to_user', user_stuff, (resp)=>{
+        DO_AJAX('delete', '/api/delete_item', user_stuff, (resp)=>{
             alert( (resp.status==='removed') ? "Removed from likes" : "Couldn't add to likes")
         })
     }

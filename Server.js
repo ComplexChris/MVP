@@ -63,7 +63,7 @@ function Express(){
         const command = ` SELECT item_name, item_type FROM single_items 
                         JOIN user_likes ON item_id=liked_item_id;`
         db.query(command, (err, data) => {
-            res.status( (err) ? 404 : 200 )
+            res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : data.rows );
         })
 
@@ -76,7 +76,7 @@ function Express(){
         const [item, table] = [req.body.item, req.body.table];
         const command = `select exists( select * from $2 where item_id=$1) as exists`
         db.query(command, [item, table],  (err, data) => {
-            res.status( (err) ? 404 : 200 )
+            res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : data.rows[0].exists );
         })
     })
@@ -88,7 +88,7 @@ function Express(){
         WHERE NOT EXISTS( SELECT * FROM user_likes WHERE liked_item_id=$1 )
         `
         db.query(command, [item_id, add_date],  (err, data) => {
-            res.status( (err) ? 404 : 200 )
+            res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : {status:'added'} );
         })
     })
@@ -119,7 +119,7 @@ function Express(){
                 console.log("Success!!!")
                 const get_id = `SELECT item_id FROM single_items WHERE item_name=$1 LIMIT 1`
                 db.query(get_id, [name],  (err, data) => {
-                    res.status( (err) ? 404 : 200 )
+                    res.status( (err) ? (console.log(err), 400) : 200 )
                     res.json( (err) ? err : data.rows[0].item_id );
                 })
             }
@@ -129,7 +129,8 @@ function Express(){
     app.post('/api/signup_user', (req, res) => {
         // Creates user database
         const {username, hash} = req.body;
-        const new_db =  (hash+username).split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+        const gen_db =  (hash+username).split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+        const new_db = Math.abs( gen_db )
         // $1 = new_db, $2 = username
         console.log("New DB ID: ", new_db)
         command = `
@@ -140,12 +141,12 @@ function Express(){
             list_id               INT
         )`
         db.query(command, [new_db],  (err, data) => {
-            res.status( (err) ? 404 : 200 )
+            res.status( (err) ? (console.log(err), 400) : 201 )
             res.json( (err) ? err : {status:"created"} );
         })
     })
 
-    app.post('/api/get_db_id' , (req, res) => {
+    app.get('/api/get_db_id' , (req, res) => {
         // Gets database ID
         const {username, hash} = req.body;
         const command = `SELECT user_db_id FROM users where username=$1 AND password_hash=$2 LIMIT 1;`
@@ -153,7 +154,7 @@ function Express(){
             const db_id = data.rows.user_db_id
             console.log("DB ID: ", db_id)
             const content = ( db_id !==undefined ) ? {status:"success", db_id} : {status:"fail"}
-            res.status( (err) ? 404 : 200 )
+            res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : content);
         })
     })
@@ -168,10 +169,10 @@ function Express(){
     })
 
     app.delete('/api/delete_item', (req, res) => {
-        const item_id = req.body.item_id
+        const {item_id} = req.body;
         const command = `DELETE FROM user_likes WHERE liked_item_id=$1`
         db.query(command, [item_id],  (err, data) => {
-            res.status( (err) ? 404 : 200 )
+            res.status( (err) ? (console.log(err), 400) : 200 )
             res.json( (err) ? err : {status:'removed'} );
         })
     })
