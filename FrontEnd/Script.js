@@ -363,6 +363,10 @@ function handleClick(event, obj){
 
     // Do get request. If already liked, invoke delete request
     // Else, add to databases
+    if(!LOGGED_IN){
+        alert("You're currently not signed in. \nPlease sign in to save your list. ")
+        return;
+    }
     
     const add_item = (item_id) =>{
         // Makes POST requests to add item to table, and returns ID of item
@@ -388,6 +392,7 @@ function handleClick(event, obj){
         }
         console.log(item)
     }
+    
     event.path[0].setAttribute('src', index<0 ? "/Images/starred.png" : "/Images/unstarred.png"  );
 
     DO_AJAX('post', '/api/add_item', obj, (item_id)=>{
@@ -406,10 +411,7 @@ function handleClick(event, obj){
 
 function DO_AJAX(method, url, json_data, callBack){
     // ('method', '/api/test', {key:value}, ()=>{} )
-    let temp = window.localStorage.getItem("USER_TOKEN");
-    if(temp===null & method!="get"){
-        alert("You're currently not signed in. \nPlease sign in to save your list. ")
-    }
+
     $.ajax({ 
         type:method,
         url: url,
