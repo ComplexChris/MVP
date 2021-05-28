@@ -410,7 +410,6 @@ function DO_AJAX(method, url, json_data, callBack){
     if(temp===null & method!="get"){
         alert("You're currently not signed in. \nPlease sign in to save your list. ")
     }
-    console.log(JSON.stringify({...json_data, ...{'USER_TOKEN':temp} }) )
     $.ajax({ 
         type:method,
         url: url,
