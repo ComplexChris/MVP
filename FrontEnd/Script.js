@@ -136,6 +136,7 @@ function log_in(isSignup){
                     window.localStorage.setItem("USER_TOKEN", resp.db_id)
                     $("div.container-display").empty()
                     LOGGED_IN = true
+                    USER_CACHE = [];
                     nav_bar()
                 }
                 alert( (LOGGED_IN) ? `Welcome, ${credentials.username}` : "Sorry, couldn't find your account." )
