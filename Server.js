@@ -133,7 +133,7 @@ function Express(){
         // $1 = new_db, $2 = username
         console.log("New DB ID: ", new_db)
         command = `
-        CREATE TABLE $1(
+        CREATE TABLE $1 (
             ID SERIAL             NOT NULL,
             liked_item_id         INT    NOT NULL,
             date_added            CHAR(50)     NOT NULL,

@@ -69,7 +69,7 @@ function createListeners(){
     const home_page = $("a.nav_home");
     home_page.click( getHome );
     const login_page = $("a.nav_login");
-    login_page.click( open_modal );
+    login_page.click( ()=>open_modal(false) );
     const signup_page = $("a.nav_signup");
     signup_page.click( ()=>open_modal(true) );
 
