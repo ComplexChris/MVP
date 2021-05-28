@@ -23,7 +23,6 @@ function Express(){
     const db = require('./db/db_configuration');
 
     // Declare the relative path to the public HTML folder
-    console.log("SETTING: ", path.join(__dirname, 'FrontEnd' ) )
     app.use(express.static( path.join(__dirname, 'FrontEnd' ) )); 
     
     // app.use((req, res, next)=> {
@@ -33,7 +32,7 @@ function Express(){
     // })
 
     app.listen(PORT, () => {
-        console.log(`Server listening on Port ${PORT}\n`, arguments );
+        console.log(`Server listening on Port ${PORT}\n` );
     });
 
 
@@ -141,7 +140,8 @@ function Express(){
             list_id               INT
         )`
         db.query(command, [new_db],  (err, data) => {
-            res.status( (err) ? (console.log(err), 400) : 201 )
+            if(err){ console.log("Error at signup: ", err) }
+            res.status( (err) ?  400 : 201 )
             res.json( (err) ? err : {status:"created"} );
         })
     })
@@ -154,7 +154,8 @@ function Express(){
             const db_id = data.rows.user_db_id
             console.log("DB ID: ", db_id)
             const content = ( db_id !==undefined ) ? {status:"success", db_id} : {status:"fail"}
-            res.status( (err) ? (console.log(err), 400) : 200 )
+            if(err){ console.log("Error with get db: ", err)  }
+            res.status( (err) ? 400 : 200 )
             res.json( (err) ? err : content);
         })
     })
