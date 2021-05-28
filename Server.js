@@ -145,8 +145,9 @@ function Express(){
             INSERT INTO users (username, display_name, password_hash, user_db_id )
             VALUES ($1, $2, $3, $4);
             `
+            console.log("ARGS: ", [username, username, hash, new_db ])
             db.query(add_user, [username, username, hash, new_db ], (err, data) => {
-                res.status( (err) ?  400 : 201 );
+                res.status( (err) ?  (console.log(err), 400) : 200 );
                 res.json( (err) ? err : {status:"created"} );
         })
     })

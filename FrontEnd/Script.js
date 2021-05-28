@@ -67,10 +67,10 @@ function createListeners(){
         }
     } )
 
-    const user_page = $("a.nav_user");
-    user_page.click( getUser );
     const home_page = $("a.nav_home");
     home_page.click( getHome );
+    const user_page = $("a.nav_user");
+    user_page.click( getUser );
     
     
     nav_bar();
@@ -123,6 +123,7 @@ function log_in(isSignup){
             DO_AJAX('post', '/api/signup_user', credentials, (resp)=>{
                 console.log("POST SIGNUP RESP is: ", resp)
                 alert( (resp.status=="created") ? "Account created. Please login." : "Could not create account.")
+                open_modal(false);
             })
         }
         else{
@@ -257,7 +258,6 @@ function makeEntry(obj, parent){
     // Defaults to appending to the Display container
     const template = {Name:"", Type:"", Star:false, ...obj}    // Destructure to overwrite new values
     if(template.Name.length<1){return false}
-    console.log("TYPE: ", template.Type)
     const dropDown = $('select.user_input')[0].value.toLowerCase()
     if( dropDown!=="" ){
         if(dropDown!==template.Type){return false}
@@ -289,10 +289,8 @@ function makeEntry(obj, parent){
 function getHome(){
     const container = $("div.container-display")
     container.empty()
-    for(item of CACHE){
-        console.log("Passing Item for Home: ", item)
-        makeEntry(item, container);
-    }
+    parseEntries(CACHE)
+    
 }
 
 function getUser(){
@@ -302,6 +300,7 @@ function getUser(){
     DO_AJAX('get', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
         const converted = res.map((item)=>{return {Name:item.item_name, Type:item.item_type}})
+        USER_CACHE = converted;
         parseEntries(converted);
     })
 }
