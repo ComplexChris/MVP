@@ -83,7 +83,7 @@ function Express(){
             // Send back to use
             DB_ID = "demo_user";
         }
-        next()
+        next();
     })
 
     app.use((req, res, next)=>{
@@ -128,6 +128,7 @@ function Express(){
     })
 
     app.get('/api/check_token', (req, res) => {
+        const {USER_TOKEN} = req.body;
         const time_left = TOKEN_CACHE[USER_TOKEN].timeLeft() 
         res.json(time_left);
     })
