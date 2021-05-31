@@ -1,6 +1,7 @@
 const express = require('express');
 const { response } = require('express');
 const cors = require('cors');
+const { max } = require('pg/lib/defaults');
 
 require('dotenv').config() // TODO: ADD THIS LINE
 
@@ -9,6 +10,31 @@ const query_master = {
 }
 
 
+class CreateToken{
+    constructor(db_name){
+        this.session_data = {
+            db_name,
+            created : Date.now()
+        }
+    }
+    isExpired(){
+        const max_time = 1.8e+6;
+        const current_time = Date.now()
+        console.log("Time left in session: ", (current_time + max) - this.session_data.created  );
+        return (this.session_data.created >= (current_time + max) ) ? true : false
+    }
+}
+function makeToken(length) {
+    var result           = [];
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * 
+ charactersLength)));
+   }
+   return result.join('');
+}
+
 function Express(){
 
     // Establish server requirements. 
@@ -16,7 +42,8 @@ function Express(){
     const path = require('path');
     const express = require('express');
     const app = express();
-    const PORT = process.env.PORT || 3000
+    const PORT = 3000 //process.env.PORT || 3000
+    const TOKEN_CACHE = []
     // Add middleware to parse body
     app.use( express.json() )
 
@@ -37,20 +64,43 @@ function Express(){
     });
 
 
+    // app.use((req, res, next)=>{
+    //     console.log("Middleware detected another request!!!");
+    //     const {USER_TOKEN} = req.body;
+    //     console.log("BODY PASSED: ",  req.body)
+    //     if(USER_TOKEN !== undefined ){
+    //         console.log("User token passed: ", USER_TOKEN);
+    //         DB_ID = USER_TOKEN;
+    //     }
+    //     else{
+    //         // Send back to use
+    //         DB_ID = "demo_user";
+    //     }
+    //     next()
+    // })
+
     app.use((req, res, next)=>{
         console.log("Middleware detected another request!!!");
         const {USER_TOKEN} = req.body;
         console.log("BODY PASSED: ",  req.body)
-        if(USER_TOKEN !== undefined ){
-            console.log("User token passed: ", USER_TOKEN);
-            DB_ID = USER_TOKEN;
+        if( TOKEN_CACHE.indexOf( USER_TOKEN ) < 0 ){
+            // Token not in cache
+            res.end();
         }
         else{
-            // Send back to use
-            DB_ID = "demo_user";
+            console.log("User token passed: ", USER_TOKEN);
+            if( TOKEN_CACHE[USER_TOKEN].isExpired ){
+                // Token expired
+                res.end();
+            }
+            else{
+                // Token accepted
+                DB_ID = TOKEN_CACHE[USER_TOKEN].session_data.db_name;
+                next();
+            }
         }
-        next()
     })
+
     app.get('/', (req, res)=>{
         console.log("HOME DIRECTORY");
         res.sendFile( path.join(__dirname, "./FrontEnd/index.html") )
@@ -69,6 +119,7 @@ function Express(){
             res.json(data);
         })
     })
+
 
     app.post('/api/get_user_db', (req, res) => {
         // Gets entire user database. Returns row entries. {}
@@ -167,14 +218,18 @@ function Express(){
     })
 })
 
-    app.post('/api/get_db_id' , (req, res) => {
+    app.post('/api/login_user' , (req, res) => {
         // Gets database ID
+        // Login user. Provided correct details, will authenticate and return token.
         const {username, hash} = req.body;
         const command = `SELECT user_db_id FROM users WHERE username=$1 AND password_hash=$2 LIMIT 1;`
         db.query(command, [username, hash],  (err, data) => {
             const db_id = data.rows[0].user_db_id
+            const token = makeToken(30);
+            TOKEN_CACHE[token] = new CreateToken(db_id)
             console.log("DB ID: ", db_id)
-            const content = ( db_id !==undefined ) ? {status:"success", db_id} : {status:"fail"}
+            console.log("Token: ", token)
+            const content = ( db_id !==undefined ) ? {status:"success", token} : {status:"fail"}
             if(err){ console.log("Error with get db: ", err)  }
             res.status( (err) ? 400 : 200 )
             res.json( (err) ? err : content);

@@ -17,6 +17,9 @@ $(document).ready(function(){
     });
 }); */
 
+// npm b-crypt
+// json web token (Google jstokens)
+
 const __version__ = "5.3.7"
 console.log(__version__)
 
@@ -129,11 +132,11 @@ function log_in(isSignup){
         }
         else{
             console.log("Loggin in...")
-            DO_AJAX('post', '/api/get_db_id', credentials, (resp)=>{
+            DO_AJAX('post', '/api/login_user', credentials, (resp)=>{
                 // Add to local storage
                 console.log("GET DB ID RESP is: ", resp)
                 if(resp.status=="success"){
-                    window.localStorage.setItem("USER_TOKEN", resp.db_id)
+                    window.localStorage.setItem("USER_TOKEN", resp.token)
                     $("div.container-display").empty()
                     LOGGED_IN = true
                     USER_CACHE = [];
@@ -380,7 +383,7 @@ function handleClick(event, obj){
 }
 
 
-function DO_AJAX(method, url, json_data, callBack){
+function DO_AJAX(method, url, json_data, callBack, errorCallback){
     // ('method', '/api/test', {key:value}, ()=>{} )
     if(method!=='get'){
         const temp = window.localStorage.getItem("USER_TOKEN");
