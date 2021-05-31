@@ -42,7 +42,7 @@ function Express(){
     const path = require('path');
     const express = require('express');
     const app = express();
-    const PORT = 3000 //process.env.PORT || 3000
+    const PORT = 3100 //process.env.PORT || 3000
     const TOKEN_CACHE = []
     // Add middleware to parse body
     app.use( express.json() )
@@ -85,20 +85,20 @@ function Express(){
         console.log("BODY PASSED: ",  req.body)
         if( TOKEN_CACHE.indexOf( USER_TOKEN ) < 0 ){
             // Token not in cache
-            res.end();
+            // res.end();
         }
         else{
             console.log("User token passed: ", USER_TOKEN);
             if( TOKEN_CACHE[USER_TOKEN].isExpired ){
                 // Token expired
-                res.end();
+                // res.end();
             }
             else{
                 // Token accepted
                 DB_ID = TOKEN_CACHE[USER_TOKEN].session_data.db_name;
-                next();
             }
         }
+        next();
     })
 
     app.get('/', (req, res)=>{
@@ -110,10 +110,11 @@ function Express(){
         console.log("DB Adress is: ", db);
         //res.send("TEST");
         //const command = "SELECT * FROM single_items"
-        const command = `
+        const command_old = `
         select exists( select item_id from single_items where item_id=$1) as user_exists, 
                exists( select item_id from single_items where item_id=12) as item_exists;
         `
+        const command = `SELECT * FROM users`
         db.query(command, (err, data) => {
             if (err){res.json(err);}
             res.json(data);
