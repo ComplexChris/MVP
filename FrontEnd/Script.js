@@ -382,6 +382,11 @@ function handleClick(event, obj){
     // Test if entry exists
 }
 
+function checkTime(){
+    DO_AJAX('get', '/api/check_token', {}, (resp)=>{
+        console.log(`Time left: ${resp}`)
+    })
+}
 
 function DO_AJAX(method, url, json_data, callBack, errorCallback){
     // ('method', '/api/test', {key:value}, ()=>{} )

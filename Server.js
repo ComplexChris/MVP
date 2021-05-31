@@ -2,6 +2,7 @@ const express = require('express');
 const { response } = require('express');
 const cors = require('cors');
 const { max, rows } = require('pg/lib/defaults');
+const { time } = require('console');
 
 require('dotenv').config() // TODO: ADD THIS LINE
 
@@ -16,12 +17,18 @@ class CreateToken{
             db_name,
             created : Date.now()
         }
+        this.max_time = 1.8e+6 / 8;
     }
     isExpired(){
-        const max_time = 1.8e+6;
         const current_time = Date.now()
         console.log("Time left in session: ", (current_time + max) - this.session_data.created  );
         return (this.session_data.created >= (current_time + max) ) ? true : false
+    }
+    timeLeft(){
+        const current_time = Date.now()
+        const time_left = (current_time + max) - this.session_data.created  
+        console.log("Time left in session: ", time_left );
+        return time_left;
     }
 }
 function makeToken(length) {
@@ -64,20 +71,20 @@ function Express(){
     });
 
 
-    // app.use((req, res, next)=>{
-    //     console.log("Middleware detected another request!!!");
-    //     const {USER_TOKEN} = req.body;
-    //     console.log("BODY PASSED: ",  req.body)
-    //     if(USER_TOKEN !== undefined ){
-    //         console.log("User token passed: ", USER_TOKEN);
-    //         DB_ID = USER_TOKEN;
-    //     }
-    //     else{
-    //         // Send back to use
-    //         DB_ID = "demo_user";
-    //     }
-    //     next()
-    // })
+    app.use((req, res, next)=>{
+        console.log("Middleware detected another request!!!");
+        const {USER_TOKEN} = req.body;
+        console.log("BODY PASSED: ",  req.body)
+        if(USER_TOKEN !== undefined ){
+            console.log("User token passed: ", USER_TOKEN);
+            DB_ID = USER_TOKEN;
+        }
+        else{
+            // Send back to use
+            DB_ID = "demo_user";
+        }
+        next()
+    })
 
     app.use((req, res, next)=>{
         console.log("Middleware detected another request!!!");
@@ -118,6 +125,11 @@ function Express(){
             if (err){res.json(err);}
             res.json(data);
         })
+    })
+
+    app.get('/api/check_token', (req, res) => {
+        const time_left = TOKEN_CACHE[USER_TOKEN].timeLeft() 
+        res.json(time_left);
     })
 
 
