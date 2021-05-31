@@ -383,7 +383,7 @@ function handleClick(event, obj){
 }
 
 function checkTime(){
-    DO_AJAX('get', '/api/check_token', {}, (resp)=>{
+    DO_AJAX('post', '/api/check_token', {}, (resp)=>{
         console.log(`Time left: ${resp}`)
     })
 }

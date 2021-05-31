@@ -127,9 +127,8 @@ function Express(){
         })
     })
 
-    app.get('/api/check_token', (req, res) => {
+    app.post('/api/check_token', (req, res) => {
         const {USER_TOKEN} = req.body;
-        
         const time_left = (TOKEN_CACHE.indexOf(USER_TOKEN)<0) ? 'Invalid Token: '+USER_TOKEN : TOKEN_CACHE[USER_TOKEN].timeLeft() 
         res.json(time_left);
     })
