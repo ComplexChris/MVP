@@ -20,13 +20,12 @@ class CreateToken{
         this.max_time = 1.8e+6 / 8;
     }
     isExpired(){
-        const current_time = Date.now()
-        console.log("Time left in session: ", (current_time + max) - this.session_data.created  );
-        return (this.session_data.created >= (current_time + max) ) ? true : false
+        return (this.timeLeft <=0) ? true : false
     }
+    
     timeLeft(){
         const current_time = Date.now()
-        const time_left = (current_time + max) - this.session_data.created  
+        const time_left = (this.session_data.created + this.max_time) - current_time;
         console.log("Time left in session: ", time_left );
         return time_left;
     }
@@ -50,7 +49,7 @@ function Express(){
     const express = require('express');
     const app = express();
     const PORT = process.env.PORT || 3000
-    const TOKEN_CACHE = []
+    const TOKEN_CACHE = {}
     // Add middleware to parse body
     app.use( express.json() )
 
@@ -71,35 +70,37 @@ function Express(){
     });
 
 
-    app.use((req, res, next)=>{
-        console.log("Middleware detected another request!!!");
-        const {USER_TOKEN} = req.body;
-        console.log("BODY PASSED: ",  req.body)
-        if(USER_TOKEN !== undefined ){
-            console.log("User token passed: ", USER_TOKEN);
-            DB_ID = USER_TOKEN;
-        }
-        else{
-            // Send back to use
-            DB_ID = "demo_user";
-        }
-        next();
-    })
+    // app.use((req, res, next)=>{
+    //     console.log("\nMiddleware detected another request!!!");
+    //     const {USER_TOKEN} = req.body;
+    //     console.log("BODY PASSED: ",  req.body)
+    //     if(USER_TOKEN !== undefined ){
+    //         console.log("User token passed: ", USER_TOKEN);
+    //         DB_ID = USER_TOKEN;
+    //     }
+    //     else{
+    //         // Send back to use
+    //         DB_ID = "demo_user";
+    //     }
+    //     next();
+    // })
 
     app.use((req, res, next)=>{
         console.log("Middleware detected another request!!!");
         const {USER_TOKEN} = req.body;
         //console.log("BODY PASSED: ",  req.body)
-        if( TOKEN_CACHE.indexOf( USER_TOKEN ) < 0 ){
+        const key_ind = Object.keys(TOKEN_CACHE).indexOf(USER_TOKEN)
+        if( key_ind < 0 ){
             // Token not in cache
             // res.end();
             console.log("\nTOKEN NOT FOUND")
         }
         else{
             console.log("User token passed: ", USER_TOKEN);
-            if( TOKEN_CACHE[USER_TOKEN].isExpired ){
+            if( TOKEN_CACHE[USER_TOKEN].isExpired() ){
                 // Token expired
                 // res.end();
+                console.log("\nEXPIRED TOKEN PASSED")
             }
             else{
                 // Token accepted
@@ -116,10 +117,10 @@ function Express(){
     })
 
     app.get('/debug', (req, res) => {
-        console.log("DB Adress is: ", db);
+        //console.log("DB Adress is: ", db);
         //res.send("TEST");
         //const command = "SELECT * FROM single_items"
-        console.log( TOKEN_CACHE )
+        console.log("Token Cache: ", TOKEN_CACHE )
         const command = `SELECT * FROM users`
         db.query(command, (err, data) => {
             if (err){res.json(err);}
@@ -129,8 +130,10 @@ function Express(){
 
     app.post('/api/check_token', (req, res) => {
         const {USER_TOKEN} = req.body;
-        const time_left = (TOKEN_CACHE.indexOf(USER_TOKEN)<0) ? 'Invalid Token: '+USER_TOKEN : TOKEN_CACHE[USER_TOKEN].timeLeft() 
-        res.json(time_left);
+        const key_ind = Object.keys(TOKEN_CACHE).indexOf(USER_TOKEN)
+        const time_left = (key_ind<0) ? 'Invalid Token: '+USER_TOKEN : TOKEN_CACHE[USER_TOKEN].timeLeft() 
+        res.send(TOKEN_CACHE[USER_TOKEN]);
+        //res.json(time_left);
     })
 
 
