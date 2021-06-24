@@ -20,7 +20,7 @@ $(document).ready(function(){
 // npm b-crypt
 // json web token (Google jstokens)
 
-const __version__ = "5.4.1"
+const __version__ = "5.4.5"
 console.log(__version__)
 
 
@@ -189,14 +189,15 @@ function  start_here(search=false){
 
     if( search ){
         const input_map = getInputs()
-        const URL = getURL( input_map )
-        console.log(URL)
-        const API_Results = DO_AJAX('get', URL, {}, (response) =>{
+        const url = getURL( input_map )
+        console.log(url)
+        const API_Results = DO_AJAX('post', '/api/fetch', {url}, (response) =>{
+            console.log("RESPONSE: ", response)
             const results = response.Similar.Results
             CACHE = [...results]    // results = Array of Objects [ {}, {} ]
             parseEntries( results )
         })
-        console.log("URL: " + URL)
+        console.log("URL: " + url)
         //this.Final = this.
     }
 }
@@ -219,7 +220,7 @@ function getURL(input_map){
     // Iterates over an object and appends key-value pairs to API URL if valid argument
     //const apiURL = "https://cors-anywhere.herokuapp.com/http://api.openbrewerydb.org/breweries?"
     //const apiURL = "https://api.openbrewerydb.org/breweries?per_page=75&"
-    const cors = 'https://cors-anywhere.herokuapp.com/'
+    const cors = '' // 'https://cors-anywhere.herokuapp.com/'
     const apiURL = `https://tastedive.com/api/similar?info=1&k=414580-API-GZ2B02NL&q=${input_map.by_name}`
     return cors+apiURL;
 
@@ -390,19 +391,37 @@ function checkTime(){
 
 function DO_AJAX(method, url, json_data, callBack, errorCallback){
     // ('method', '/api/test', {key:value}, ()=>{} )
+
+
     if(method!=='get'){
         const temp = window.localStorage.getItem("USER_TOKEN");
         if(temp!==null){ json_data['USER_TOKEN'] = temp}
+
+        $.ajax({
+            type:method,
+            url: url,
+            data:  JSON.stringify( json_data ) ,
+            contentType: 'application/json',
+            success: (res) => {callBack(res)},
+            error: function(error){
+                console.log(error)
+                alert(`Error. Can't ${method.toUpperCase() } that right now.`)
+            }
+        });
+
     }
-    $.ajax({
-        type:method,
-        url: url,
-        data:  JSON.stringify( json_data ) ,
-        contentType: 'application/json',
-        success: (res) => {callBack(res)},
-        error: function(error){
-            console.log(error)
-            alert(`Error. Can't ${method.toUpperCase() } that right now.`)
+
+    else{
+        $.ajax({
+            type:'post',
+            url: '/api/fetch',
+            data:  JSON.stringify( {url} ) ,
+            contentType: 'application/json',
+            success: (res) => {callBack(res)},
+            error: function(error){
+                console.log(error)
+                alert(`Error. Can't ${method.toUpperCase() } that right now.`)
+            }
+        });
         }
-    });
 }

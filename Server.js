@@ -3,6 +3,7 @@ const { response } = require('express');
 const cors = require('cors');
 const { max, rows } = require('pg/lib/defaults');
 const { time } = require('console');
+const fetch = require('node-fetch');
 
 require('dotenv').config() // TODO: ADD THIS LINE
 
@@ -66,25 +67,22 @@ function Express(){
     //     next();
     // })
 
+    const do_fetch = (url, callback) => {
+        console.log("URL: ", url);
+        fetch( url )
+          .then((response) => response.json())
+          .then((data) => callback( data ) )
+          .catch((err)=>{
+              console.log("Error: ", err)
+              callback({error:"ERROR"})
+            }) ;
+      }
+
     app.listen(PORT, () => {
         console.log(`Server listening on Port ${PORT}\n` );
     });
 
 
-    // app.use((req, res, next)=>{
-    //     console.log("\nMiddleware detected another request!!!");
-    //     const {USER_TOKEN} = req.body;
-    //     console.log("BODY PASSED: ",  req.body)
-    //     if(USER_TOKEN !== undefined ){
-    //         console.log("User token passed: ", USER_TOKEN);
-    //         DB_ID = USER_TOKEN;
-    //     }
-    //     else{
-    //         // Send back to use
-    //         DB_ID = "demo_user";
-    //     }
-    //     next();
-    // })
 
     app.use((req, res, next)=>{
         console.log("Middleware detected another request!!!");
@@ -117,6 +115,22 @@ function Express(){
         console.log("HOME DIRECTORY");
         res.sendFile( path.join(__dirname, "./FrontEnd/index.html") )
     })
+
+    app.post('/api/fetch', (req, res)=>{
+
+        try {
+            const cb = (data) => {
+                res.status(200)
+                res.json(data)
+            } // res.send
+            const url = req.body.url
+            do_fetch( url, cb )
+        }
+        catch{
+            console.log("An error has occured")
+        }
+    })
+
 
     app.get('/debug', (req, res) => {
         //console.log("DB Adress is: ", db);
