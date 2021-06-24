@@ -11,7 +11,7 @@
 /*
 $(document).ready(function(){
     $("form").submit(function(e){
-        
+
         const inst =  new Breweries}
         e.preventDefault()
     });
@@ -20,7 +20,7 @@ $(document).ready(function(){
 // npm b-crypt
 // json web token (Google jstokens)
 
-const __version__ = "5.3.7"
+const __version__ = "5.4.1"
 console.log(__version__)
 
 
@@ -71,15 +71,15 @@ function createListeners(){
     home_page.click( getHome );
     const user_page = $("a.nav_user");
     user_page.click( getUser );
-    
-    
+
+
     nav_bar();
 
     console.log("User action set")
 }
 
 function open_modal(isSignup){
-    
+
     const container = $("div.container-display")
     container.empty()    // Empty the Cache and Display Container
     const verb = (isSignup) ? "Sign Up" : "Log In";
@@ -97,7 +97,7 @@ function open_modal(isSignup){
         ])     // Card Closer
     ])
     const modal_page = $("input#login_submit")
-    const action = (isSignup==true) ? ()=>log_in(true) : ()=>log_in(false) 
+    const action = (isSignup==true) ? ()=>log_in(true) : ()=>log_in(false)
     modal_page.click( action )
 
 }
@@ -107,8 +107,8 @@ function log_in(isSignup){
     // If not, revoke
     console.log("Creating user session...")
     const inp_vals = getInputs(  $("#login_modal .user_input"))    // {login_username: "name", login_password: "password"}
-    const vals_only = Object.values(inp_vals) 
-    const anyInvalid = vals_only.some ( (item)=>{ return item.length<5 }) 
+    const vals_only = Object.values(inp_vals)
+    const anyInvalid = vals_only.some ( (item)=>{ return item.length<5 })
     if( !anyInvalid ){
         // All inputs are valid, proceeding...
         // Now post inputs to get database ID
@@ -121,7 +121,7 @@ function log_in(isSignup){
             hash:  CryptoJS.MD5( inp_vals.login_password ).toString()
         }
         console.log( "CRED: ", credentials )
-        
+
         if(isSignup){
             console.log("Signing up...")
             DO_AJAX('post', '/api/signup_user', credentials, (resp)=>{
@@ -182,19 +182,19 @@ function nav_bar(){
         $("a.nav_login").click( ()=>open_modal(false) );
         $("a.nav_signup").click( ()=>open_modal(true) );
     }
-    
+
 
 }
 function  start_here(search=false){
-    
+
     if( search ){
         const input_map = getInputs()
         const URL = getURL( input_map )
         console.log(URL)
-        const API_Results = DO_AJAX('get', URL, {}, (response) =>{ 
+        const API_Results = DO_AJAX('get', URL, {}, (response) =>{
             const results = response.Similar.Results
             CACHE = [...results]    // results = Array of Objects [ {}, {} ]
-            parseEntries( results ) 
+            parseEntries( results )
         })
         console.log("URL: " + URL)
         //this.Final = this.
@@ -205,7 +205,7 @@ function getInputs( elements_path=".field .user_input" ){ // elements_path="inpu
         // Gets data from all input fields
         // $("form.submit_search_form input.user_input")
     const inp_els = $(elements_path)
-    
+
     const input_map = {}
     inp_els.each( function(index, element){
         const key = element.name
@@ -253,8 +253,8 @@ function parseEntries(raw_json){
             setTimeout( () => {
                 const nothing = response.shift()
                 item['Star'] = user_items.indexOf(item.Name) >= 0  ;   // item object now has 3 entries
-                let ret = makeEntry(item, container); 
-                if(ret!==false){ isEmpty=false } 
+                let ret = makeEntry(item, container);
+                if(ret!==false){ isEmpty=false }
                 if(response.length==0 & isEmpty){
                     alert("No matches found for that query. \nMaybe adjust the Entertainment Type?");
                 }
@@ -262,7 +262,7 @@ function parseEntries(raw_json){
             200)
         }
         $(".container-display").css("text-shadow", " inset 15px 14px 2px maroon" )
-        
+
     }
 }
 
@@ -286,17 +286,17 @@ function makeEntry(obj, parent){
     //const $header = $('<div/>', {class: "title", text=template.name})
     const image_url = (template.Star) ? './Images/starred.png' : './Images/unstarred.png' ;
     parent.append([
-        $('<div/>', {class: "brewery-card" } ).append(  [ 
-            $('<div/>', {class: "brewery-card-left"} ).append([    
+        $('<div/>', {class: "brewery-card" } ).append(  [
+            $('<div/>', {class: "brewery-card-left"} ).append([
                 $('<div/>', {class: "details", text:template.Name, id:template.id  }),       // Header for top of entry
-                $("<br>"),  
+                $("<br>"),
                 $('<div/>', {class: "details", text:` Type: ${template.Type}`}) ,   // Span for displaying additional content
                 $("<br>"),
                 $('<a/>', {class: "details", id:"extra_stuff", target:"_blank", href:template.wUrl, text:` Wiki Link: ${template.wUrl}`}), $("<br>"),
                 $('<a/>', {class: "details", id:"extra_stuff", target:"_blank", href:template.yUrl, text:` Youtube Link: ${template.yUrl}`}), $("<br>"),
                 $('<div/>', {class: "details", id:"extra_stuff", text:` Description: \n\t${template.wTeaser}`})    // Span for displaying additional content
             ]),
-            $('<div/>', {class: "brewery-card-right"} ).append([ 
+            $('<div/>', {class: "brewery-card-right"} ).append([
                 $('<div/>', {class:'details-right', html:`<img src="${image_url}">`, onclick:`handleClick(event, ${JSON.stringify(obj)} )`})       // Header for top of entry
             ])
         ]),  // Closer for div element
@@ -317,7 +317,7 @@ function getHome(){
 
 function getUser(){
     // AJAX Call to server.
-    // Then parses results 
+    // Then parses results
     // and passes to make entry elements
     DO_AJAX('post', "/api/get_user_db", {}, (res) =>{
         console.log("API 'get' succeeded");
@@ -333,7 +333,7 @@ var global;
 function handleClick(event, obj){
     // Click event for when an item card is clicked.
     // obj //{Name:"", Type:""}
-    
+
 
     // Do get request. If already liked, invoke delete request
     // Else, add to databases
@@ -341,7 +341,7 @@ function handleClick(event, obj){
         alert("You're currently not signed in. \nPlease sign in to save your progress. ")
         return;
     }
-    
+
     const add_item = (item_id) =>{
         // Makes POST requests to add item to table, and returns ID of item
         const date_str = new Date().toGMTString()
@@ -356,7 +356,7 @@ function handleClick(event, obj){
             alert( (resp.status==='removed') ? "Removed from likes" : "Couldn't add to likes")
         })
     }
-    // USER_CACHE.forEach( (item)=>{if(item==sub){n=-1} } ) 
+    // USER_CACHE.forEach( (item)=>{if(item==sub){n=-1} } )
     //const index = USER_CACHE.indexOf(obj)
     let index = -1;
     for(item in USER_CACHE){
@@ -366,7 +366,7 @@ function handleClick(event, obj){
         }
         console.log(item)
     }
-    
+
     event.path[0].setAttribute('src', index<0 ? "/Images/starred.png" : "/Images/unstarred.png"  );
 
     DO_AJAX('post', '/api/add_item', obj, (item_id)=>{
@@ -394,15 +394,15 @@ function DO_AJAX(method, url, json_data, callBack, errorCallback){
         const temp = window.localStorage.getItem("USER_TOKEN");
         if(temp!==null){ json_data['USER_TOKEN'] = temp}
     }
-    $.ajax({ 
+    $.ajax({
         type:method,
         url: url,
-        data:  JSON.stringify( json_data ) , 
+        data:  JSON.stringify( json_data ) ,
         contentType: 'application/json',
         success: (res) => {callBack(res)},
         error: function(error){
             console.log(error)
             alert(`Error. Can't ${method.toUpperCase() } that right now.`)
         }
-    }); 
+    });
 }

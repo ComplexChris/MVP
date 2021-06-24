@@ -22,7 +22,7 @@ class CreateToken{
     isExpired(){
         return (this.timeLeft <=0) ? true : false
     }
-    
+
     timeLeft(){
         const current_time = Date.now()
         const time_left = (this.session_data.created + this.max_time) - current_time;
@@ -35,7 +35,7 @@ function makeToken(length) {
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
-        result.push(characters.charAt(Math.floor(Math.random() * 
+        result.push(characters.charAt(Math.floor(Math.random() *
         charactersLength)));
     }
     return result.join('');
@@ -43,13 +43,14 @@ function makeToken(length) {
 
 function Express(){
 
-    // Establish server requirements. 
+    // Establish server requirements.
     var DB_ID = "demo_user"
     const path = require('path');
     const express = require('express');
     const app = express();
     const PORT = process.env.PORT || 3000
     const TOKEN_CACHE = {}
+    app.use(cors());
     // Add middleware to parse body
     app.use( express.json() )
 
@@ -57,8 +58,8 @@ function Express(){
     const db = require('./db/db_configuration');
 
     // Declare the relative path to the public HTML folder
-    app.use(express.static( path.join(__dirname, 'FrontEnd' ) )); 
-    
+    app.use(express.static( path.join(__dirname, 'FrontEnd' ) ));
+
     // app.use((req, res, next)=> {
     //     console.log("SHIT")
     //     console.log("FFFUUUCCKK: ", req.body);
@@ -101,6 +102,7 @@ function Express(){
                 // Token expired
                 // res.end();
                 console.log("\nEXPIRED TOKEN PASSED")
+                res.send("EXPIRED")
             }
             else{
                 // Token accepted
@@ -131,7 +133,7 @@ function Express(){
     app.post('/api/check_token', (req, res) => {
         const {USER_TOKEN} = req.body;
         const key_ind = Object.keys(TOKEN_CACHE).indexOf(USER_TOKEN)
-        const time_left = (key_ind<0) ? 'Invalid Token: '+USER_TOKEN : TOKEN_CACHE[USER_TOKEN].timeLeft() 
+        const time_left = (key_ind<0) ? 'Invalid Token: '+USER_TOKEN : TOKEN_CACHE[USER_TOKEN].timeLeft()
         res.send(TOKEN_CACHE[USER_TOKEN]);
         //res.json(time_left);
     })
@@ -140,7 +142,7 @@ function Express(){
     app.post('/api/get_user_db', (req, res) => {
         // Gets entire user database. Returns row entries. {}
         //const command = `SELECT * FROM ${DB_ID} `
-        const command = ` SELECT item_name, item_type FROM single_items 
+        const command = ` SELECT item_name, item_type FROM single_items
                         JOIN ${DB_ID} ON item_id=liked_item_id;`
         db.query(command, (err, data) => {
             res.status( (err) ? (console.log(err), 400) : 200 )
@@ -173,7 +175,7 @@ function Express(){
         })
     })
     app.post('/api/add_item', (req, res) => {
-        // Primary method. Used to add entries to 2 tables. 
+        // Primary method. Used to add entries to 2 tables.
         // Multi Step process.
         // 1. Add item to 'single_items table
         // 2. Get id of item and returns id of item
@@ -184,11 +186,11 @@ function Express(){
 
         const [name, type] = [req.body.Name, req.body.Type];
         const command = `
-        INSERT INTO single_items (item_name, item_type) SELECT $1, $2 
+        INSERT INTO single_items (item_name, item_type) SELECT $1, $2
         WHERE NOT EXISTS( SELECT * FROM single_items WHERE item_name=$1 )
         `
         //const chk_quer = `select exists( select item_id from single_items where id=12)`
-        
+
         db.query(command, [name, type], (err, data) => {
             if (err){
                 console.log(err);
@@ -209,7 +211,7 @@ function Express(){
     app.post('/api/signup_user', (req, res) => {
         // Creates user database
         const {username, hash} = req.body;
-        const gen_db =  (hash+username).split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+        const gen_db =  (hash+username).split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
         const new_db = "db_"+Math.abs( gen_db )
         // $1 = new_db, $2 = username
         console.log("New DB ID: ", new_db)
@@ -226,7 +228,7 @@ function Express(){
             INSERT INTO users (username, password_hash, user_db_id ) SELECT $1, $2, $3
             WHERE NOT EXISTS( SELECT * FROM users WHERE username=$1 )
             `
-            
+
             db.query(add_user, [username, hash, new_db ], (err, data) => {
                 res.status( (err) ?  (console.log(`INSERT INTO USERS ERROR: ,`, err), 400) : 200 );
                 res.json( (err) ? err : {status:"created"} );
@@ -254,7 +256,7 @@ function Express(){
             res.json( (err) ? err : content);
         })
     })
-    
+
 
     app.put('/api/save_entry', (req, res) => {
         // Placeholder for future updates
