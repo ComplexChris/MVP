@@ -20,7 +20,7 @@ $(document).ready(function(){
 // npm b-crypt
 // json web token (Google jstokens)
 
-const __version__ = "5.4.5"
+const __version__ = "5.4.7"
 console.log(__version__)
 
 
@@ -396,32 +396,17 @@ function DO_AJAX(method, url, json_data, callBack, errorCallback){
     if(method!=='get'){
         const temp = window.localStorage.getItem("USER_TOKEN");
         if(temp!==null){ json_data['USER_TOKEN'] = temp}
-
-        $.ajax({
-            type:method,
-            url: url,
-            data:  JSON.stringify( json_data ) ,
-            contentType: 'application/json',
-            success: (res) => {callBack(res)},
-            error: function(error){
-                console.log(error)
-                alert(`Error. Can't ${method.toUpperCase() } that right now.`)
-            }
-        });
-
     }
 
-    else{
-        $.ajax({
-            type:'post',
-            url: '/api/fetch',
-            data:  JSON.stringify( {url} ) ,
-            contentType: 'application/json',
-            success: (res) => {callBack(res)},
-            error: function(error){
-                console.log(error)
-                alert(`Error. Can't ${method.toUpperCase() } that right now.`)
-            }
-        });
+    $.ajax({
+        type:method,
+        url: url,
+        data:  JSON.stringify( json_data ) ,
+        contentType: 'application/json',
+        success: (res) => {callBack(res)},
+        error: function(error){
+            console.log(error)
+            alert(`Error. Can't ${method.toUpperCase() } that right now.`)
         }
+    });
 }
